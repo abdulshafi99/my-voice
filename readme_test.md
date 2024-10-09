@@ -1,5 +1,4 @@
-# my-voice
-Social media app for communicating internally between organizations
+# Internal Company Social Media App
 
 ## Table of Contents
 - [Overview](#overview)
@@ -11,7 +10,7 @@ Social media app for communicating internally between organizations
 ---
 
 ## Overview
-This app is an internal social media platform for employees to share suggestions, feedback, and concerns. For example, employees can post about something, problem he faced or maybe just joking, and others can upvote or downvote the suggestion, leave comments, and mark the post as "done."
+This app is an internal social media platform for employees to share suggestions, feedback, and concerns. For example, employees can post about office conditions (e.g., adjusting the air conditioning), and others can upvote or downvote the suggestion, leave comments, and mark the post as "done."
 
 ---
 
@@ -94,3 +93,50 @@ This app is an internal social media platform for employees to share suggestions
 ### Stage 2: Design Database Schema
 - Define models for Users, Posts, Comments, and Votes.
 - Set up relationships between the models using SQLAlchemy.
+
+### Stage 3: Create Backend Routes
+- **Authentication Routes**:
+  - `/register`: Handle user registration.
+  - `/login`: Handle user login.
+  - `/logout`: Handle user logout.
+- **Post Routes**:
+  - `/create_post`: To create a new post.
+  - `/posts`: List all posts (active and archived).
+  - `/archive_post/<post_id>`: Archive a post as done.
+- **Comment Routes**:
+  - `/comment/<post_id>`: Add a comment to a post.
+- **Voting Routes**:
+  - `/upvote/<post_id>`: Upvote a post.
+  - `/downvote/<post_id>`: Downvote a post.
+
+### Stage 4: Build the Frontend
+1. **HTML Templates**: Create HTML templates for rendering the homepage, post creation page, etc.
+2. **CSS/JS**: Add interactivity (e.g., voting, submitting comments) with JavaScript and style the app with CSS.
+3. **AJAX**: Use JavaScript to send asynchronous requests for voting, commenting, and archiving posts without page reloads.
+
+### Stage 5: Add User Authentication
+- Use `Flask-Login` to manage user sessions, including registration, login, and logout.
+- Protect certain routes (e.g., post creation, voting) so only authenticated users can access them.
+
+### Stage 6: Implement Post Status and Archival
+- Add functionality to mark posts as "done" by changing their status in the database.
+- Display archived posts differently from active ones.
+
+### Stage 7: Testing and Debugging
+- Test the application thoroughly, ensuring the backend and frontend are correctly linked.
+- Debug any issues with routes, database connections, or frontend features.
+
+### Stage 8: Deployment (Optional)
+- Set up deployment using **Docker**, **Heroku**, or your preferred hosting service.
+- Use **PostgreSQL** for the production database.
+- Ensure environment variables (like secret keys) are secured.
+
+---
+
+## Future Improvements
+- Add **real-time updates** using WebSockets or Server-Sent Events.
+- Implement **roles and permissions** for admins to manage posts and users.
+- Add a **search feature** to find posts based on keywords or filters.
+
+---
+
