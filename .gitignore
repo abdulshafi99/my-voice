@@ -1,5 +1,7 @@
 
 .vscode/
-readme_test.md
 .venv
 __pychache__
+
+readme_test.md
+db_init.py

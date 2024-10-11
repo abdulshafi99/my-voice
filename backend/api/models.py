@@ -1,5 +1,5 @@
 from datetime import datetime
-from app import db
+from api import db
 
 
 # user Table in database
@@ -59,7 +59,7 @@ class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    vote_type = db.Column(db.Boolean, unllable=False)
+    vote_type = db.Column(db.Boolean, nullable=False)
 
     # how vote object will be printed
     def __repr__(self):
