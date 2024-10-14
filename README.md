@@ -94,3 +94,7 @@ This app is an internal social media platform for employees to share suggestions
 ### Stage 2: Design Database Schema
 - Define models for Users, Posts, Comments, and Votes.
 - Set up relationships between the models using SQLAlchemy.
+
+### Stage 3: Build the basic frontend & Create the basic structure for backend routes
+1. **HTML Templates**: Create HTML templates for rendering the homepage, post creation page, etc.
+2. **API Routes**: login, register, logout, posts, create_post, comment, vote 

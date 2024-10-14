@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- normalize html element rendering -->
+     <link rel="stylesheet" href="css/normalize.css">
+     <!-- Font Awesome icons Library -->
+      <link rel="stylesheet" href="css/all.min.css">
+    <!-- main styling css File -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/framework.css">
+    <title>My-voice</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.png">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="assets/logo.png" alt="">
+        </div>
+        <div class="profile">
+            <img src="assets/default-user.png" alt="">
+            <h2>User Name</h2>
+            <div class="drop-down" id="dropDown">
+                <i class="fa-solid fa-sort-down"></i>
+            </div>
+
+            <div class="menu" id="menu">
+                <button id="btnMenu">Log Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- Post Feed Section -->
+        <main id='feed' class="feed">
+            
+            <!-- Create Post Box -->
+            <div class="create-post">
+                <textarea placeholder="What's on your mind?"></textarea>
+                <button>POST</button>
+            </div>
+
+            <!-- Post Feed -->
+            <div class="post">
+                <div class="post-header">
+                    <div class="author">
+                        <img src="assets/default-user.png" alt="" class="author-img">
+                        <h3 class="author-name">Anonymous</h3>
+                    </div>
+                    <span>1 hour ago</span>
+                </div>
+                <div class="post-content">
+                    <p>This is a sample post content.</p>
+                </div>
+                <div class="post-footer">
+                    <button>Upvote</button>
+                    <button>Downvote</button>
+                    <button>Comment</button>
+                </div>
+            </div>
+
+            <!-- More posts can go here -->
+
+        </main>
+        
+    </div>
+    <script src="scripts/script.js"></script>
+</body>
+</html>

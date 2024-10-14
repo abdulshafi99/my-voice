@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My-voice</title>
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+        <!-- normalize html element rendering -->
+         <link rel="stylesheet" href="css/normalize.css">
+         <!-- Font Awesome icons Library -->
+          <link rel="stylesheet" href="css/all.min.css">
+        <!-- main styling css File -->
+        <!-- <link rel="stylesheet" href="css/index.css"> -->
+        <link rel="stylesheet" href="css/register.css">
+        <!-- Mini CSS Frame -->
+         <link rel="stylesheet" href="css/framework.css">
+        <title>My-voice</title>
+        <link rel="icon" type="image/x-icon" href="assets/favicon.png">
+</head>
+<body>
+
+
+    <main class="container center">
+        <h1 class="h1">My Voice</h1>
+        <div class="register card">
+            <div class="register-title center-txt">
+                <h2>Create a new account</h2>
+                <span>it's quick and easy.</span>
+            </div>
+            <form id="form">
+                <div class="name">
+                    <input type="text" required name="firstName" class="inpt" id="firstName" placeholder="First name">
+                    <input type="text" required name="surname" class="inpt" id="surname" placeholder="Surname">
+                </div>
+                <input type="email" required name="email" id="email" class="inpt m-10 full email" placeholder="email address">
+                <input type="password" required name="password" id="password" class="inpt m-10 full password" placeholder="New Password">
+                <input type="password" required name="comfirmPassword" id="confirmPassword" class="inpt m-10 full password" placeholder="Confirm Password">
+                <p id="flashPassword" class="flash danger">Passwords don't match!</p>
+                <p id="flashEmail" class="flash danger">This Email Already registered! please try another email</p>
+                <input type="submit" value="Sign Up" id="SignUp" class="btn m-10 m-auto signUp">
+            </form>
+        </div>
+    </main>
+
+    <script src="scripts/register.js"></script>
+</body>
+</html>
