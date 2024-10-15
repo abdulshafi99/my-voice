@@ -41,9 +41,11 @@ form.addEventListener('submit', async (event) => {
 
     const response = await request.json();
 
-    if (response.token) {
+    if (response.status == 201) {
         setToken(response.token);
         location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/index.html')
+    } else {
+        console.log(response.status)
     }
     // if (response.token) {
     //     // location.replace('index.html');

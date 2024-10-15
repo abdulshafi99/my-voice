@@ -12,6 +12,9 @@ body {
 .block {
     display: block;
 }
+.hide {
+    display: none;
+}
 .center {
     display: flex;
     justify-content: center;

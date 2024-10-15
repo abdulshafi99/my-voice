@@ -18,7 +18,7 @@ function checkPassword(pass1, pass2) {
 }
 
 const sendData = async (data, route) => {
-    request = await fetch(`http://127.0.0.1:5000/${route}`, {
+    const request = await fetch(`http://127.0.0.1:5000/${route}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -67,6 +67,7 @@ form.addEventListener('submit', async (event) => {
     if(response.status == 201) {
         location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html');
     } else {
+        console.log(response.status)
         flashEmail.style.display = 'block';
         return;
     }

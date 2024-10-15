@@ -90,9 +90,33 @@ def get_posts():
 
 
 # Endpoint: for creating new post
-@app.route('/create_post')
+@app.route('/create_post', methods=['POST'])
 def create_post():
-    pass
+    if request.method == 'POST':
+        data = request.get_json()
+        user = User.query.filter_by(email=data['token']).first()
+        post = Post(
+            content = data['content'],
+            user_id = user.id
+        )
+        db.session.add(post)
+        db.session.commit()
+        return jsonify({
+            'post': {
+                'id': post.id,
+                'content': post.content,
+                'status': post.status,
+                'post_date': post.post_date,
+                'author': post.author.username,
+            },
+            'message': 'Post created successfully and added to database',
+            'status' : 200
+        })
+    else:
+        return jsonify({
+            'message': 'Unautherized access',
+            'statsu': 401
+        })
 
 
 # Endpoint: for commenting
@@ -104,3 +128,7 @@ def comment():
 @app.route('/vote')
 def vote():
     pass
+
+@app.route('/home')
+def home():
+    return "<h1> hello Mustafa</h1>"
