@@ -1,8 +1,12 @@
-from flask import jsonify, request, session, redirect, url_for, render_template
+from flask import jsonify, request, redirect, url_for, render_template
 from api import app, db
 import secrets
 from datetime import datetime
 from api.models import User, Post, Comment, Vote
+
+session = {
+
+}
 
 # Endpoint: to create new users
 @app.route('/register', methods=['POST'])
@@ -40,12 +44,12 @@ def login():
         user = User.query.filter_by(email=data['email']).first()
 
         if user and user.password == data['password']:
-            new_session = secrets.token_hex(16)
-            session[data['email']] = new_session
+            key = secrets.token_hex(16)
+            session[key] = data['email']
             response = {
                 'message': 'User Loged in successfuly',
                 'status': 201,
-                'token': user.email
+                'key': key
             }
             return jsonify(response)
         else:
@@ -61,11 +65,48 @@ def logout():
     if request.method == 'POST':
         data = request.get_json()
         print(data)
-        session.pop(data['token'], None)
+        del session[data['key']]
     return jsonify({
-        'message': 'Token removed from backend',
+        'message': 'key removed from backend',
         'status': 200
     })
+
+@app.route('/check_email', methods=['POST'])
+def check_email():
+    if request.method == 'POST':
+        data = request.get_json()
+        user = User.query.filter_by(email=data['email'])
+        if user:
+            respose = {
+                'message': 'Email registered',
+                'status': 200
+            }
+        else:
+            respose = {
+                'message': 'Email not Registered',
+                'status': 409
+            }
+        return respose
+
+@app.route('/current_user', methods=['POST'])
+def current_user():
+    if request.method == 'POST':
+        data = request.get_json()
+        email = session[data['key']]
+        user = User.query.filter_by(email=email).first()
+        response = {
+            'message': 'Ok!',
+            'status': 200,
+            'username': user.username
+        }
+    else:
+        response = {
+            'message': 'Something wrong!',
+            'status': 401
+        }
+    return jsonify(response)
+    
+
 
 # Endpoint: for returnning all posts
 @app.route('/get_posts', methods=['GET'])
@@ -84,9 +125,13 @@ def get_posts():
         print(post)
         posts.append(post)
 
+        posts.sort(key=lambda post: post['post_date'], reverse=True)
 
     return jsonify(posts)
 
+@app.route('/get_comments', methods=['POST'])
+def get_comments():
+    pass
 
 
 # Endpoint: for creating new post
@@ -94,7 +139,7 @@ def get_posts():
 def create_post():
     if request.method == 'POST':
         data = request.get_json()
-        user = User.query.filter_by(email=data['token']).first()
+        user = User.query.filter_by(email=session[data['key']]).first()
         post = Post(
             content = data['content'],
             user_id = user.id

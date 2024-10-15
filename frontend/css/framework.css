@@ -103,3 +103,7 @@ body {
 .danger {
     background-color: rgba(243, 45, 45, 0.766);
 }
+
+.clr-main {
+    color: #2394c9;
+}

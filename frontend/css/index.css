@@ -90,24 +90,28 @@
     padding: 20px;
     width: 70%;
     margin: auto;
+    flex-direction: column;
 }
-
-.feed {
-    flex: 1;
-    margin: 0 20px;
-}
-
 .create-post {
     background-color: white;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
 }
 
+.feed {
+    /* flex: 1; */
+    margin: 0 20px;
+}
+
+
 .create-post textarea {
-    width: 100%;
-    padding: 10px;
+    width: 95%;
+    display: block;
+    padding: 15px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: none;
@@ -115,9 +119,10 @@
 
 .create-post button {
     margin-top: 10px;
-    padding: 10px;
+    padding: 13px;
     background-color: #4267b2;
     color: white;
+    font-size: 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;

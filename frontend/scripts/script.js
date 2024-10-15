@@ -1,8 +1,8 @@
 
-const isAuthenticated = () => Boolean(localStorage.getItem('token'))
-const getToken = () => localStorage.getItem('token');
-const getTokenKey = () => localStorage.getItem('tokenKey');
-const removeToken = () => localStorage.clear();
+const isAuthenticated = () => Boolean(localStorage.getItem('key'))
+const getKey = () => localStorage.getItem('key');
+const removeKey = () => localStorage.clear();
+
 
 function setDate(date) {
     date = date.replace(' GMT', '');
@@ -15,6 +15,11 @@ function setDate(date) {
         return `${Math.floor((sec/60) / 60)} hours`
     }
 
+}
+
+function clearFeed() {
+    const feed = document.getElementById('feed');
+    feed.innerHTML = "";
 }
 function createPost(post) {
 
@@ -100,22 +105,14 @@ async function get_posts() {
             return 0;
         }
     });
-
+    clearFeed();
     for (const post of posts) {
         createPost(post);
     }
        
 }
 
-addEventListener("load", () => {
 
-    if (isAuthenticated()) {
-        get_posts();
-    }
-    else {
-        location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html')
-    }
-});
 
 const dropDown = document.getElementById('dropDown');
 const meun = document.getElementById('menu');
@@ -131,11 +128,11 @@ dropDown.addEventListener('click', () => {
     }
 })
 
-const btnMenu = document.getElementById('btnMenu');
-btnMenu.addEventListener('click', async (event) => {
+const logout = document.getElementById('logout');
+logout.addEventListener('click', async (event) => {
     
-    token = getToken();
-    removeToken();
+    key = getKey();
+    removeKey();
 
     const request = await fetch('http://127.0.0.1:5000/logout', {
         method: 'POST',
@@ -143,7 +140,7 @@ btnMenu.addEventListener('click', async (event) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            token: token,
+            key: key,
         })
     });
 
@@ -163,14 +160,14 @@ newSubmitPost.addEventListener('click', async(event) => {
     newPostText.value = '';
 
     if (content.length > 0) {
-        const token = getToken();
+        const key = getKey();
         const request = await fetch('http://127.0.0.1:5000/create_post', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                token: token,
+                key: key,
                 content: content
             })
         });
@@ -178,9 +175,41 @@ newSubmitPost.addEventListener('click', async(event) => {
         const response = await request.json();
 
         if (response.status == 200) {
-            createPost(response.post);
+            get_posts();
         } else {
             return
         }
     } 
 })
+
+async function setUsername() {
+    const key = getKey();
+    response = await fetch('http://127.0.0.1:5000/current_user', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            key: key
+        })
+    });
+
+    const data = await response.json();
+
+    if (data.status == 200) {
+        document.getElementById('userName').innerText =  data.username;
+    } else {
+        document.getElementById('userName').innerText = "Unkonw user";
+    }
+}
+
+addEventListener("load", () => {
+
+    if (isAuthenticated()) {
+        setUsername()
+        get_posts();
+    }
+    else {
+        location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html')
+    }
+});

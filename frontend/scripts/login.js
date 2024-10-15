@@ -1,5 +1,5 @@
 
-const setToken = (token) => localStorage.setItem('token', token);
+const setKey = (key) => localStorage.setItem('key', key);
 
 const email = document.getElementById('email');
 const password = document.getElementById('password');
@@ -10,13 +10,14 @@ const form = document.getElementById('form');
 form.addEventListener('submit', async (event) => {
     event.preventDefault();    // Prevent the form from sending to backend
 
-    // const xhr = new XMLHttpRequest();
-
     const user_email = email.value;
     email.value = '';
 
     user_password = password.value;
     password.value = '';
+
+    const flashLogin = document.getElementById('flashLogin');
+    flashLogin.style.display = 'none'
 
     const user = JSON.stringify({
         email: user_email,
@@ -24,13 +25,6 @@ form.addEventListener('submit', async (event) => {
     });
 
     
-    // xhr.open('POST', 'http://127.0.0.1:5000/login');
-    // xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    // xhr.send(user);
-
-    // response = xhr.response;
-    // console.log(response);
-
     const request = await fetch('http://127.0.0.1:5000/login', {
         method: 'POST',
         headers: {
@@ -42,10 +36,11 @@ form.addEventListener('submit', async (event) => {
     const response = await request.json();
 
     if (response.status == 201) {
-        setToken(response.token);
+        setKey(response.key);
+        console.log(response);
         location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/index.html')
     } else {
-        console.log(response.status)
+        flashLogin.style.display = 'block';
     }
     // if (response.token) {
     //     // location.replace('index.html');

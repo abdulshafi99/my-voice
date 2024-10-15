@@ -28,29 +28,28 @@
         </div>
         <div class="profile">
             <img src="assets/default-user.png" alt="">
-            <h2>User Name</h2>
+            <h2 id="userName">User Name</h2>
             <div class="drop-down" id="dropDown">
                 <i class="fa-solid fa-sort-down"></i>
             </div>
 
             <div class="menu" id="menu">
-                <button id="btnMenu">Log Out</button>
+                <button id="logout">Log Out</button>
             </div>
         </div>
     </nav>
 
     <!-- Main Container -->
     <div class="container">
-
+        <div class="create-post">
+            <textarea placeholder="What's on your mind?" id="newPostText"></textarea>
+            <button id="newSubmitPost">POST</button>
+        </div>
         <!-- Post Feed Section -->
         <main id='feed' class="feed">
-            
-            <!-- Create Post Box -->
-            <div class="create-post">
-                <textarea placeholder="What's on your mind?" id="newPostText"></textarea>
-                <button id="newSubmitPost">POST</button>
-            </div>
-
+        
+        <!-- Create Post Box -->
+        
             <!-- Post Feed -->
             <!-- <div class="post">
                 <div class="post-header">
