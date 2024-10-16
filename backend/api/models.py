@@ -36,10 +36,32 @@ class Post(db.Model):
     # Build relationship between Post and Comments  one:many
     comments = db.relationship('Comment', backref='post', lazy=True)
 
+    def get_comments(self):
+        result = []
+        for comment in self.comments:
+            result.append({
+                'content': comment.content,
+                'username': comment.author.username,
+                'comment_date': comment.comment_date
+            })
+        return result
+    
     # Build relationship between Post and Votes  one:many
     votes = db.relationship('Vote', backref='post', lazy=True)
 
-
+    def get_votes(self):
+        up = 0
+        down = 0
+        for vote in self.votes:
+            if vote.vote_type == 'upvote':
+                up += 1
+            else:
+                down += 1
+        return {
+            'upvote': up,
+            'downvote': down
+        }
+ 
     def __repr__(self):
         return f"Post(content='{self.content}', date={self.post_date}', status={self.status}, author={self.user_id})"
 
@@ -51,6 +73,13 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     comment_date = db.Column(db.DateTime, default=datetime.now)
 
+    def get_comment(self):
+        return {
+            'content': self.content,
+            'username': self.author.username,
+            'postid': self.post_id,
+            'commentDate': self.comment_date
+        }
     # how comment object will be printed
     def __repr__(self):
         return f"Comment(content='{self.content}', username={self.user_id}', post={self.post_id}, date={self.comment_date})"
@@ -60,7 +89,7 @@ class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    vote_type = db.Column(db.Boolean, nullable=False)
+    vote_type = db.Column(db.String(20), nullable=False)
 
     # how vote object will be printed
     def __repr__(self):

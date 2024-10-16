@@ -121,11 +121,14 @@ def get_posts():
             'status': record.status,
             'post_date': record.post_date,
             'author': record.author.username,
+            'comments': record.get_comments(),
+            'votes': record.get_votes()
         }
-        print(post)
         posts.append(post)
 
         posts.sort(key=lambda post: post['post_date'], reverse=True)
+        for post in posts:
+            print(post)
 
     return jsonify(posts)
 
@@ -153,6 +156,8 @@ def create_post():
                 'status': post.status,
                 'post_date': post.post_date,
                 'author': post.author.username,
+                'votes': post.get_votes(),
+                'comments': post.get_comments()
             },
             'message': 'Post created successfully and added to database',
             'status' : 200
@@ -165,9 +170,32 @@ def create_post():
 
 
 # Endpoint: for commenting
-@app.route('/comment')
-def comment():
-    pass
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    data = request.get_json()
+    print(data)
+    user = User.query.filter_by(email=session[data['key']]).first()
+    print(user)
+    if user:
+        comment = Comment(
+            content= data['content'],
+            user_id = user.id,
+            post_id = data['post_id']
+        )
+        print(comment)
+        db.session.add(comment)
+        db.session.commit()
+        response = {
+            'message': 'comment added successfuly',
+            'status': 200,
+            'comment': comment.get_comment()
+        }
+    else:
+        response = {
+            'message': "something wrong can't add the comment",
+            'status': 401
+        }
+    return jsonify(response)
 
 # Endpoint: for voting
 @app.route('/vote')

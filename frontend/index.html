@@ -63,9 +63,21 @@
                     <p>This is a sample post content.</p>
                 </div>
                 <div class="post-footer">
-                    <button>Upvote</button>
-                    <button>Downvote</button>
-                    <button>Comment</button>
+                    <button>Upvote <span class="votes">3</span></button>
+                    <button>Downvote <span class="votes">0</span></button>
+                    <div class="add-comment">
+                        <input type="text" name="" id="comment-inpt" class="comment-inpt" placeholder="Write a comment...">
+                        <button id="commentBtn" class="commentBtn">comment</button>
+                    </div>
+                </div>
+                <div class="comments" id="comments">
+                    <div class="comment" id="comment">
+                        <img src="assets/default-user.png" alt="">
+                        <div class="comment-card" user="12" id="commentCard">
+                            <h3 id="comment-author">Author</h3>
+                            <p class="comment-content">Lorem ipsum dolor sit amet.</p>
+                        </div>
+                    </div>
                 </div>
             </div> -->
 

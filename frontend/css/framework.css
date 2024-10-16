@@ -107,3 +107,32 @@ body {
 .clr-main {
     color: #2394c9;
 }
+
+.votes {
+    font-weight: 800;
+}
+
+.comments{
+    padding: 50px;
+    margin-top: 20px;
+    border-top: .5px solid #000;
+}
+
+.comment {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: .5px solid #ddd;
+}
+.comment img {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+.comment-card {
+    width: 60%;
+    background-color: #ddd;
+    padding: 15px;
+    border-radius: 8px;
+}
+

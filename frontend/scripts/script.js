@@ -3,6 +3,9 @@ const isAuthenticated = () => Boolean(localStorage.getItem('key'))
 const getKey = () => localStorage.getItem('key');
 const removeKey = () => localStorage.clear();
 
+const listenToComments = [];
+const listenToVoteDown = [];
+const listenToVoteUp = [];
 
 function setDate(date) {
     date = date.replace(' GMT', '');
@@ -21,17 +24,54 @@ function clearFeed() {
     const feed = document.getElementById('feed');
     feed.innerHTML = "";
 }
+
+function get_comments(comments) {
+    const commentsContainer = document.createElement('div');
+
+    for (const comment of comments) {
+        const commentContainer = document.createElement('div');
+        commentContainer.setAttribute('class', 'comment');
+        commentContainer.setAttribute('id', 'comment');
+
+        const img = document.createElement('img');
+        img.setAttribute('src', 'assets/default-user.png');
+
+        const commentCard = document.createElement('div');
+        commentCard.setAttribute('class', 'comment-card');
+        commentCard.setAttribute('id', 'commentCard');
+
+        const h3 = document.createElement('h3');
+        h3.setAttribute('id', 'comment-author');
+        h3.innerText = comment.username
+
+        const content = document.createElement('p');
+        content.setAttribute|('class', 'comment-content');
+        content.innerText = comment.content;
+
+        commentCard.appendChild(h3);
+        commentCard.appendChild(content);
+
+        commentContainer.appendChild(img);
+        commentContainer.appendChild(commentCard);
+
+        commentsContainer.appendChild(commentContainer);
+
+    }
+
+    return commentsContainer;
+}
 function createPost(post) {
 
     const feed = document.getElementById('feed');
 
     const mainPost = document.createElement('div');
     mainPost.setAttribute('class', 'post');
+    mainPost.setAttribute('postid', `${post.id}`);
 
-    const postId = document.createElement('span');
-    postId.setAttribute('id', 'postId');
-    postId.setAttribute('class', 'hide');
-    postId.value = post.id;
+    // const postId = document.createElement('span');
+    // postId.setAttribute('id', 'postId');
+    // postId.setAttribute('class', 'hide');
+    // postId.innerText = post.id;
     
 
     const postHeader = document.createElement('div');
@@ -57,15 +97,33 @@ function createPost(post) {
 
     const postFooter = document.createElement('div');
     postFooter.setAttribute('class', 'post-footer');
+    postFooter.setAttribute('postID', String(post.id));
 
     const upVote = document.createElement('button');
-    upVote.innerText = 'Upvote';
-
+    upVote.innerHTML = `Upvote <span class="votes">${post.votes.upvote}</span>`;
+    
     const downVote = document.createElement('button');
-    downVote.innerText = 'Downvote';
+    downVote.innerHTML = `Downvote <span class="votes">${post.votes.downvote}</span>`;
+    
+    const addComment = document.createElement('div');
+    addComment.setAttribute('class', 'add-comment');
 
-    const comment = document.createElement('button');
-    comment.innerText = 'Comment';
+    const commentInpt = document.createElement('input');
+    commentInpt.setAttribute('type', 'text');
+    commentInpt.setAttribute('id', 'comment-inpt');
+    commentInpt.setAttribute('class', 'comment-inpt');
+    commentInpt.setAttribute('placeholder', 'Write a comment...');
+    commentInpt.setAttribute('postID', String(post.id));
+    // comment.innerText = 'Comment';
+    const commentBtn = document.createElement('button');
+    commentBtn.setAttribute('id', 'commentBtn');
+    commentBtn.setAttribute('class', 'commentBtn');
+    commentBtn.setAttribute('postID', String(post.id));
+    commentBtn.innerText = 'Comment';
+
+    addComment.appendChild(commentInpt);
+    addComment.appendChild(commentBtn);
+    
 
     postHeader.appendChild(postAuthor);
     postHeader.appendChild(date);
@@ -77,12 +135,21 @@ function createPost(post) {
 
     postFooter.appendChild(upVote);
     postFooter.appendChild(downVote);
-    postFooter.appendChild(comment);
+    postFooter.appendChild(addComment);
 
-    mainPost.appendChild(postId);
+    const comments = get_comments(post.comments);
+
+    comments.setAttribute('class', 'comments');
+    comments.setAttribute('id', 'comments');
+
+    if (post.comments.length  == 0) {
+        comments.setAttribute('class', 'hide');
+    }
+
     mainPost.appendChild(postHeader);
     mainPost.appendChild(postContent);
     mainPost.appendChild(postFooter);
+    mainPost.appendChild(comments)
 
     feed.appendChild(mainPost);
 } 
@@ -96,20 +163,20 @@ async function get_posts() {
     });
     const posts = await response.json();
 
-    posts.sort((post1, post2) => {
-        if (post1.post_date < post2.post_date) {
-            return 1;
-        } else if (post1.post_date > post2.post_date) {
-            return -1;
-        } else {
-            return 0;
-        }
-    });
+    // posts.sort((post1, post2) => {
+    //     if (post1.post_date < post2.post_date) {
+    //         return 1;
+    //     } else if (post1.post_date > post2.post_date) {
+    //         return -1;
+    //     } else {
+    //         return 0;
+    //     }
+    // });
+
     clearFeed();
     for (const post of posts) {
         createPost(post);
-    }
-       
+    }  
 }
 
 
@@ -153,6 +220,93 @@ logout.addEventListener('click', async (event) => {
 
 });
 
+function addPost(post) {
+    const feed = document.getElementById('feed');
+
+    const mainPost = document.createElement('div');
+    mainPost.setAttribute('class', 'post');
+    mainPost.setAttribute('postid', `${post.id}`);
+
+    const postHeader = document.createElement('div');
+    postHeader.setAttribute('class', 'post-header');
+
+    const postAuthor = document.createElement('div');
+    postAuthor.setAttribute('class', 'author');
+    
+    const authorImg = document.createElement('img');
+    authorImg.setAttribute('src', 'assets/default-user.png');
+    
+    const authorName = document.createElement('h3');
+    authorName.setAttribute('class', 'author-name');
+    authorName.innerText = post.author;
+
+    const date = document.createElement('span');
+    date.innerText = setDate(post.post_date) + ' ago';
+
+    const postContent = document.createElement('div');
+    postContent.setAttribute('class', 'post-content');
+    const p = document.createElement('p');
+    p.innerText = post.content;
+
+    const postFooter = document.createElement('div');
+    postFooter.setAttribute('class', 'post-footer');
+    postFooter.setAttribute('postID', String(post.id));
+
+    const upVote = document.createElement('button');
+    upVote.innerHTML = `Upvote <span class="votes">${post.votes.upvote}</span>`;
+    
+    const downVote = document.createElement('button');
+    downVote.innerHTML = `Downvote <span class="votes">${post.votes.downvote}</span>`;
+    
+    const addComment = document.createElement('div');
+    addComment.setAttribute('class', 'add-comment');
+
+    const commentInpt = document.createElement('input');
+    commentInpt.setAttribute('type', 'text');
+    commentInpt.setAttribute('id', 'comment-inpt');
+    commentInpt.setAttribute('class', 'comment-inpt');
+    commentInpt.setAttribute('placeholder', 'Write a comment...');
+    commentInpt.setAttribute('postID', String(post.id));
+    // comment.innerText = 'Comment';
+    const commentBtn = document.createElement('button');
+    commentBtn.setAttribute('id', 'commentBtn');
+    commentBtn.setAttribute('class', 'commentBtn');
+    commentBtn.setAttribute('postID', String(post.id));
+    commentBtn.innerText = 'Comment';
+
+    addComment.appendChild(commentInpt);
+    addComment.appendChild(commentBtn);
+    
+
+    postHeader.appendChild(postAuthor);
+    postHeader.appendChild(date);
+
+    postAuthor.appendChild(authorImg);
+    postAuthor.appendChild(authorName);
+
+    postContent.appendChild(p);
+
+    postFooter.appendChild(upVote);
+    postFooter.appendChild(downVote);
+    postFooter.appendChild(addComment);
+
+    const comments = get_comments(post.comments);
+
+    comments.setAttribute('class', 'comments');
+    comments.setAttribute('id', 'comments');
+
+    if (post.comments.length  == 0) {
+        comments.setAttribute('class', 'hide');
+    }
+
+    mainPost.appendChild(postHeader);
+    mainPost.appendChild(postContent);
+    mainPost.appendChild(postFooter);
+    mainPost.appendChild(comments);
+
+    feed.prepend(mainPost);
+}
+
 const newPostText = document.getElementById('newPostText');
 const newSubmitPost = document.getElementById('newSubmitPost');
 newSubmitPost.addEventListener('click', async(event) => {
@@ -175,9 +329,9 @@ newSubmitPost.addEventListener('click', async(event) => {
         const response = await request.json();
 
         if (response.status == 200) {
-            get_posts();
+            addPost(response.post);
         } else {
-            return
+            console.log(response);
         }
     } 
 })
@@ -203,13 +357,174 @@ async function setUsername() {
     }
 }
 
-addEventListener("load", () => {
 
+// document.addEventListener("DOMContentLoaded", 
+    
+    
+// });
+
+
+// async fucntion home() {
+    
+//     if (isAuthenticated()) {
+//         await setUsername()
+//         await get_posts();
+        
+//         const commentBtns = document.querySelectorAll('.commentBtn');
+//         for (const btn of commentBtns) {
+//             btn.addEventListener('click', async (event) => {
+//                 const postid = btn.getAttribute('postid');
+//                 const commentInpt = document.querySelector(`.add-comment > input[postid='${postid}']`);
+            
+//                 const comment = commentInpt.value;
+//                 commentInpt.value = '';
+                
+//                 const request = await fetch('http://127.0.0.1:5000/add_comment', {
+//                     method: 'POST',
+//                     headers: {
+//                         "Content-Type": "application/json"
+//                     },
+//                     body: JSON.stringify({
+//                         post_id: postid,
+//                         content: comment,
+//                         key: getKey()
+//                     })
+//                 })
+            
+//                 response = await request.json();
+            
+//                 if (response.status == 200) {
+//                     window.location.relaod();
+//                 } else {
+//                     console.log(response);
+//                 }
+//             }
+//             );
+//         }
+//     }
+//     else {
+//         location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html')
+//     }
+// }
+
+function addComment(comment) {
+    const comments = document.querySelector(`.post[postid="${comment.postid}"] > .comments`);
+    console.log(comments);
+
+    const commentContainer = document.createElement('div');
+    commentContainer.setAttribute('class', 'comment');
+    commentContainer.setAttribute('id', 'comment');
+
+    const img = document.createElement('img');
+    img.setAttribute('src', 'assets/default-user.png');
+
+    const commentCard = document.createElement('div');
+    commentCard.setAttribute('class', 'comment-card');
+    commentCard.setAttribute('id', 'commentCard');
+
+    const h3 = document.createElement('h3');
+    h3.setAttribute('id', 'comment-author');
+    h3.innerText = comment.username
+
+    const content = document.createElement('p');
+    content.setAttribute|('class', 'comment-content');
+    content.innerText = comment.content;
+
+    commentCard.appendChild(h3);
+    commentCard.appendChild(content);
+
+    commentContainer.appendChild(img);
+    commentContainer.appendChild(commentCard);
+
+    comments.append(commentContainer);
+    
+}
+
+document. addEventListener("DOMContentLoaded", async () => {
     if (isAuthenticated()) {
-        setUsername()
-        get_posts();
-    }
-    else {
+        await setUsername();
+        await get_posts();
+
+
+        const commentBtns = document.querySelectorAll('.commentBtn');
+        for (const btn of commentBtns) {
+            btn.addEventListener('click', async (event) => {
+                const postid = btn.getAttribute('postid');
+                console.log(postid);
+                const commentInpt = document.querySelector(`input[postid="${postid}"]`);    
+            
+                const comment = commentInpt.value;
+                commentInpt.value = '';
+                
+                const request = await fetch('http://127.0.0.1:5000/add_comment', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        post_id: postid,
+                        content: comment,
+                        key: getKey()
+                    })
+                })
+            
+                response = await request.json();
+            
+                if (response.status == 200) {
+                    addComment(response.comment);
+                } else {
+                    console.log(response);
+                }
+            }
+            );
+        }
+    } else {
         location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html')
     }
+
+
 });
+
+// async function home() {
+//         if (isAuthenticated()) {
+//         await setUsername()
+//         await get_posts();
+        
+//         // const commentBtns = document.querySelectorAll('.commentBtn');
+//         // for (const btn of commentBtns) {
+//         //     btn.addEventListener('click', async (event) => {
+//         //         const postid = btn.getAttribute('postid');
+//         //         console.log(postid);
+//         //         const commentInpt = document.querySelector(`.add-comment > input[postid=${postid}]`);
+            
+//         //         const comment = commentInpt.value;
+//         //         commentInpt.value = '';
+                
+//         //         const request = await fetch('http://127.0.0.1:5000/add_comment', {
+//         //             method: 'POST',
+//         //             headers: {
+//         //                 "Content-Type": "application/json"
+//         //             },
+//         //             body: JSON.stringify({
+//         //                 post_id: postid,
+//         //                 content: comment,
+//         //                 key: getKey()
+//         //             })
+//         //         })
+            
+//         //         response = await request.json();
+            
+//         //         if (response.status == 200) {
+//         //             addComment(postid, comment);
+//         //         } else {
+//         //             console.log(response);
+//         //         }
+//         //     }
+//         //     );
+//         // }
+//     }
+//     else {
+//         location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html')
+//     }
+// }
+

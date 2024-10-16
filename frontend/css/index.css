@@ -154,10 +154,20 @@
     margin-top: 20px;
     margin-bottom: 20px;
     font-size: 1.2rem;
+    margin-left: 20px;
+}
+.post-footer {
+    display: flex;
+}
+.post-footer .add-comment .comment-inpt {
+    padding: 10px;
+    border-radius: 80px;
+    width: 450px;
+    margin-right: 10px;
 }
 .post-footer button {
     margin-right: 10px;
-    padding: 5px 10px;
+    padding: 10px 10px;
     background-color: #4267b2;
     color: white;
     border: none;
