@@ -198,9 +198,37 @@ def add_comment():
     return jsonify(response)
 
 # Endpoint: for voting
-@app.route('/vote')
-def vote():
-    pass
+@app.route('/add_vote', methods=['POST'])
+def add_vote():
+    data = request.get_json()
+    user_id = User.query.filter_by(email= session[data['key']]).first().id
+    post_id = data['postid']
+    if user_id and post_id:
+        vote = Vote.query.filter_by(user_id=user_id, post_id=post_id).first()
+        post = Post.query.filter_by(id=post_id).first()
+        if vote:
+            vote.vote_type = data['vote']
+            db.session.commit()
+        else:
+            vote = Vote(
+                post_id = post_id,
+                user_id = user_id,
+                vote_type = data['vote']
+            )
+            db.session.add(vote)
+            db.session.commit()
+        response = {
+            'message': 'vote submitted successfully',
+            'status': 200,
+            'votes': post.get_votes()
+        }
+    else:
+        response = {
+            'message': 'something wrong with votes',
+            'status': 401,
+        }
+    return response
+        
 
 @app.route('/home')
 def home():
