@@ -112,7 +112,7 @@ def current_user():
 @app.route('/get_posts', methods=['GET'])
 def get_posts():
 
-    data = Post.query.all()
+    data = Post.query.filter_by(status=False)
     posts = []
     for record in data:
         post = {

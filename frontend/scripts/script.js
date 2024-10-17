@@ -60,6 +60,54 @@ function get_comments(comments) {
 
     return commentsContainer;
 }
+
+function createComment(comment) {
+    console.log(comment.postid)
+    const comments = document.querySelector(`.post[postid="${comment.postid}"] > .comments`);
+    comments.classList.remove('hide');
+    
+    console.log(comments);
+
+    const commentContainer = document.createElement('div');
+    commentContainer.setAttribute('class', 'comment');
+    commentContainer.setAttribute('id', 'comment');
+
+    const img = document.createElement('img');
+    img.setAttribute('src', 'assets/default-user.png');
+
+    const commentCard = document.createElement('div');
+    commentCard.setAttribute('class', 'comment-card');
+    commentCard.setAttribute('id', 'commentCard');
+
+    const h3 = document.createElement('h3');
+    h3.setAttribute('id', 'comment-author');
+    h3.innerText = comment.username
+
+    const content = document.createElement('p');
+    content.setAttribute|('class', 'comment-content');
+    content.innerText = comment.content;
+
+    commentCard.appendChild(h3);
+    commentCard.appendChild(content);
+
+    commentContainer.appendChild(img);
+    commentContainer.appendChild(commentCard);
+
+    comments.append(commentContainer);
+    
+}
+
+function addVotes(postid, votes) {
+    console.log(postid)
+    console.log(votes)
+    
+    const upvotes = document.querySelector(`.post-footer[postid="${postid}"] > button[type="upvote"]`)
+    const downvotes = document.querySelector(`.post-footer[postid="${postid}"] > button[type="downvote"]`)
+
+    upvotes.innerHTML = `Upvote  <span class='votes'>${votes.upvote}</span>`
+    downvotes.innerHTML = `Downvote  <span class='votes'>${votes.downvote}</span>`
+}
+
 function createPost(post) {
 
     const feed = document.getElementById('feed');
@@ -103,12 +151,63 @@ function createPost(post) {
     upVote.setAttribute('class', 'vote');
     upVote.setAttribute('type', 'upvote');
     upVote.innerHTML = `Upvote <span class="votes">${post.votes.upvote}</span>`;
+    upVote.addEventListener('click', async () => {
+        key = getKey();
+        postid = upVote.parentElement.getAttribute('postid');
+        vote = upVote.getAttribute('type');
+
+        const request = await fetch('http://127.0.0.1:5000/add_vote', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                postid: postid,
+                vote: vote,
+                key: key
+            })
+        });
+
+        const response = await request.json();
+
+        if (response.status == 200) {
+            console.log(response);
+            addVotes(postid, response.votes);
+        } else {
+            console.log(response);
+        }
+    })
     
     const downVote = document.createElement('button');
     downVote.setAttribute('class', 'vote');
     downVote.setAttribute('type', 'downvote');
     downVote.innerHTML = `Downvote <span class="votes">${post.votes.downvote}</span>`;
-   
+    downVote.addEventListener('click', async () => {
+        key = getKey();
+        postid = downVote.parentElement.getAttribute('postid');
+        vote = downVote.getAttribute('type');
+
+        const request = await fetch('http://127.0.0.1:5000/add_vote', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                postid: postid,
+                vote: vote,
+                key: key
+            })
+        });
+
+        const response = await request.json();
+
+        if (response.status == 200) {
+            console.log(response);
+            addVotes(postid, response.votes);
+        } else {
+            console.log(response);
+        }
+    })
     
     const addComment = document.createElement('div');
     addComment.setAttribute('class', 'add-comment');
@@ -125,6 +224,35 @@ function createPost(post) {
     commentBtn.setAttribute('class', 'commentBtn');
     commentBtn.setAttribute('postID', String(post.id));
     commentBtn.innerText = 'Comment';
+
+    commentBtn.addEventListener('click', async () => {
+        const postid = commentBtn.getAttribute('postid');
+        console.log(postid);
+        const commentText = document.querySelector(`input[postid="${postid}"]`);    
+    
+        const comment = commentText.value;
+        commentText.value = '';
+        
+        const request = await fetch('http://127.0.0.1:5000/add_comment', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                post_id: postid,
+                content: comment,
+                key: getKey()
+            })
+        })
+    
+        response = await request.json();
+    
+        if (response.status == 200) {
+            createComment(response.comment);
+        } else {
+            console.log(response);
+        }
+    });
 
     addComment.appendChild(commentInpt);
     addComment.appendChild(commentBtn);
@@ -144,11 +272,11 @@ function createPost(post) {
 
     const comments = get_comments(post.comments);
 
-    comments.setAttribute('class', 'comments');
+    comments.classList.add('comments');
     comments.setAttribute('id', 'comments');
 
-    if (post.comments.length  == 0) {
-        comments.setAttribute('class', 'hide');
+    if (post.comments.length == 0) {
+        comments.classList.add('hide');
     }
 
     mainPost.appendChild(postHeader);
@@ -255,18 +383,70 @@ function addPost(post) {
 
     const postFooter = document.createElement('div');
     postFooter.setAttribute('class', 'post-footer');
-    postFooter.setAttribute('postID', String(post.id));
+    postFooter.setAttribute('postid', String(post.id));
 
     const upVote = document.createElement('button');
     upVote.setAttribute('class', 'vote');
     upVote.setAttribute('type', 'upvote');
     upVote.innerHTML = `Upvote <span class="votes">${post.votes.upvote}</span>`;
+    upVote.addEventListener('click', async () => {
+        key = getKey();
+        postid = upVote.parentElement.getAttribute('postid');
+        vote = upVote.getAttribute('type');
+
+        const request = await fetch('http://127.0.0.1:5000/add_vote', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                postid: postid,
+                vote: vote,
+                key: key
+            })
+        });
+
+        const response = await request.json();
+
+        if (response.status == 200) {
+            console.log(response);
+            addVotes(postid, response.votes);
+        } else {
+            console.log(response);
+        }
+    })
     
     const downVote = document.createElement('button');
     downVote.setAttribute('class', 'vote');
     downVote.setAttribute('type', 'downvote');
     downVote.innerHTML = `Downvote <span class="votes">${post.votes.downvote}</span>`;
-    
+    downVote.addEventListener('click', async () => {
+        key = getKey();
+        postid = downVote.parentElement.getAttribute('postid');
+        vote = downVote.getAttribute('type');
+
+        const request = await fetch('http://127.0.0.1:5000/add_vote', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                postid: postid,
+                vote: vote,
+                key: key
+            })
+        });
+
+        const response = await request.json();
+
+        if (response.status == 200) {
+            console.log(response);
+            addVotes(postid, response.votes);
+        } else {
+            console.log(response);
+        }
+    })
+
     const addComment = document.createElement('div');
     addComment.setAttribute('class', 'add-comment');
 
@@ -282,6 +462,35 @@ function addPost(post) {
     commentBtn.setAttribute('class', 'commentBtn');
     commentBtn.setAttribute('postID', String(post.id));
     commentBtn.innerText = 'Comment';
+
+    commentBtn.addEventListener('click', async () => {
+        const postid = commentBtn.getAttribute('postid');
+        console.log(postid);
+        const commentText = document.querySelector(`input[postid="${postid}"]`);    
+    
+        const comment = commentText.value;
+        commentText.value = '';
+        
+        const request = await fetch('http://127.0.0.1:5000/add_comment', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                post_id: postid,
+                content: comment,
+                key: getKey()
+            })
+        })
+    
+        response = await request.json();
+    
+        if (response.status == 200) {
+            createComment(response.comment);
+        } else {
+            console.log(response);
+        }
+    })
 
     addComment.appendChild(commentInpt);
     addComment.appendChild(commentBtn);
@@ -301,12 +510,13 @@ function addPost(post) {
 
     const comments = get_comments(post.comments);
 
-    comments.setAttribute('class', 'comments');
+    comments.classList.add('comments');
     comments.setAttribute('id', 'comments');
 
     if (post.comments.length  == 0) {
-        comments.setAttribute('class', 'hide');
+        comments.classList.add('hide');
     }
+
 
     mainPost.appendChild(postHeader);
     mainPost.appendChild(postContent);
@@ -314,6 +524,7 @@ function addPost(post) {
     mainPost.appendChild(comments);
 
     feed.prepend(mainPost);
+    
 }
 
 const newPostText = document.getElementById('newPostText');
@@ -340,7 +551,8 @@ newSubmitPost.addEventListener('click', async(event) => {
         if (response.status == 200) {
             addPost(response.post);
         } else {
-            console.log(response);
+            removeKey();
+            location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html');
         }
     } 
 })
@@ -417,49 +629,9 @@ async function setUsername() {
 // }
 
 
-function addVotes(postid, votes) {
-    console.log(postid)
-    console.log(votes)
-    
-    const upvotes = document.querySelector(`.post-footer[postid="${postid}"] > button[type="upvote"]`)
-    const downvotes = document.querySelector(`.post-footer[postid="${postid}"] > button[type="downvote"]`)
 
-    upvotes.innerHTML = `Upvote  <span class='votes'>${votes.upvote}</span>`
-    downvotes.innerHTML = `Downvote  <span class='votes'>${votes.downvote}</span>`
-}
 
-function addComment(comment) {
-    const comments = document.querySelector(`.post[postid="${comment.postid}"] > .comments`);
-    console.log(comments);
 
-    const commentContainer = document.createElement('div');
-    commentContainer.setAttribute('class', 'comment');
-    commentContainer.setAttribute('id', 'comment');
-
-    const img = document.createElement('img');
-    img.setAttribute('src', 'assets/default-user.png');
-
-    const commentCard = document.createElement('div');
-    commentCard.setAttribute('class', 'comment-card');
-    commentCard.setAttribute('id', 'commentCard');
-
-    const h3 = document.createElement('h3');
-    h3.setAttribute('id', 'comment-author');
-    h3.innerText = comment.username
-
-    const content = document.createElement('p');
-    content.setAttribute|('class', 'comment-content');
-    content.innerText = comment.content;
-
-    commentCard.appendChild(h3);
-    commentCard.appendChild(content);
-
-    commentContainer.appendChild(img);
-    commentContainer.appendChild(commentCard);
-
-    comments.append(commentContainer);
-    
-}
 
 document. addEventListener("DOMContentLoaded", async () => {
     if (isAuthenticated()) {
@@ -467,69 +639,36 @@ document. addEventListener("DOMContentLoaded", async () => {
         await get_posts();
 
 
-        const commentBtns = document.querySelectorAll('.commentBtn');
-        for (const btn of commentBtns) {
-            btn.addEventListener('click', async (event) => {
-                const postid = btn.getAttribute('postid');
-                console.log(postid);
-                const commentInpt = document.querySelector(`input[postid="${postid}"]`);    
-            
-                const comment = commentInpt.value;
-                commentInpt.value = '';
-                
-                const request = await fetch('http://127.0.0.1:5000/add_comment', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        post_id: postid,
-                        content: comment,
-                        key: getKey()
-                    })
-                })
-            
-                response = await request.json();
-            
-                if (response.status == 200) {
-                    addComment(response.comment);
-                } else {
-                    console.log(response);
-                }
-            }
-            );   
-        }
+        // const voteBtns = document.querySelectorAll('.vote');
+        // // console.log(voteBtns);
+        // for (const btn of voteBtns) {
+        //     btn.addEventListener('click', async () => {
+        //         key = getKey();
+        //         postid = btn.parentElement.getAttribute('postid');
+        //         vote = btn.getAttribute('type');
 
-        const voteBtns = document.querySelectorAll('.vote');
-        // console.log(voteBtns);
-        for (const btn of voteBtns) {
-            btn.addEventListener('click', async () => {
-                key = getKey();
-                postid = btn.parentElement.getAttribute('postid');
-                vote = btn.getAttribute('type');
+        //         const request = await fetch('http://127.0.0.1:5000/add_vote', {
+        //             method: 'POST',
+        //             headers: {
+        //                 "Content-Type": "application/json"
+        //             },
+        //             body: JSON.stringify({
+        //                 postid: postid,
+        //                 vote: vote,
+        //                 key: key
+        //             })
+        //         });
 
-                const request = await fetch('http://127.0.0.1:5000/add_vote', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        postid: postid,
-                        vote: vote,
-                        key: key
-                    })
-                });
+        //         const response = await request.json();
 
-                const response = await request.json();
-
-                if (response.status == 200) {
-                    console.log(response);
-                    addVotes(postid, response.votes);
-                } else {
-                    console.log(response);
-                }
-            })
-        }
+        //         if (response.status == 200) {
+        //             console.log(response);
+        //             addVotes(postid, response.votes);
+        //         } else {
+        //             console.log(response);
+        //         }
+        //     })
+        // }
         
     } else {
         location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html')
