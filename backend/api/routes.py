@@ -126,7 +126,7 @@ def get_posts():
         }
         posts.append(post)
 
-        posts.sort(key=lambda post: post['post_date'], reverse=True)
+        posts.sort(key=lambda post: post['post_date'], reverse=False)
         for post in posts:
             print(post)
 
@@ -168,6 +168,24 @@ def create_post():
             'statsu': 401
         })
 
+@app.route('/archive_post', methods=['POST'])
+def archive_post():
+    if request.method == 'POST':
+        data = request.get_json()
+        post = Post.query.filter_by(id=data['post_id']).first()
+        if post:
+            post.status = True
+            db.session.commit()
+            return jsonify({
+                'message': 'Post archived successfully',
+                'status': 200,
+                'postid': post.id
+            })
+    else:
+        return jsonify({
+            'message': 'Post: Something wrong',
+            'status': 401
+        })
 
 # Endpoint: for commenting
 @app.route('/add_comment', methods=['POST'])

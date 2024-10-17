@@ -135,3 +135,7 @@ body {
     padding: 15px;
     border-radius: 8px;
 }
+
+button:hover {
+    background-color: #30a9e6b6;
+}
