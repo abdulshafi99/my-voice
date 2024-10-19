@@ -10,6 +10,7 @@ class User(db.Model):
     password = db.Column(db.String(16), nullable=False, unique=False)
     role = db.Column(db.String(30), nullable=False, unique=False, default='Trainee')
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    join_date = db.Column(db.DateTime, default= datetime.now)
     # session = db.Column(db.String(16), nullable=False, default='')
 
     # Build relationship between User and Posts  one:many
@@ -77,6 +78,7 @@ class Comment(db.Model):
         return {
             'content': self.content,
             'username': self.author.username,
+            'userid': self.user_id,
             'postid': self.post_id,
             'commentDate': self.comment_date
         }
@@ -93,4 +95,4 @@ class Vote(db.Model):
 
     # how vote object will be printed
     def __repr__(self):
-        return f"Vote(post='{self.post_id}', username={self.user_id}', vote={'Vote Up' if self.vote_type == True else 'Vote Down'})"
+        return f"Vote(post='{self.post_id}', username={self.user_id}', vote={'Vote Up' if self.vote_type == 'upvote' else 'Vote Down'})"

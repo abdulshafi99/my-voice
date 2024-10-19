@@ -18,6 +18,7 @@ def register():
             user = User(
                 username = data['username'],
                 email = data['email'],
+                role = data['role'],
                 password = data['password']
             )
             print(user)
@@ -97,7 +98,10 @@ def current_user():
         response = {
             'message': 'Ok!',
             'status': 200,
-            'username': user.username
+            'user': {
+                'username': user.username,
+                'id': user.id
+            }
         }
     else:
         response = {
@@ -106,30 +110,52 @@ def current_user():
         }
     return jsonify(response)
     
+@app.route('/get_user/<id>')
+def get_user(id):
+    user = User.query.filter_by(id=id).first()
+
+    if user:
+        response = {
+            'message': 'user exist',
+            'status': 200,
+            'user': {
+                'username': user.username,
+                'email': user.email,
+                'role': user.role,
+                'join_date': user.join_date
+            }
+        }
+    else:
+        response = {
+            'message': 'user does not exist',
+            'status': 401
+        }
+    return response
 
 
 # Endpoint: for returnning all posts
-@app.route('/get_posts', methods=['GET'])
+@app.route('/get_posts', methods=['POST'])
 def get_posts():
 
     data = Post.query.filter_by(status=False)
+    key = request.get_json()['key']
     posts = []
     for record in data:
         post = {
             'id': record.id,
+            'userid': record.user_id,
             'content': record.content,
             'status': record.status,
             'post_date': record.post_date,
             'author': record.author.username,
             'comments': record.get_comments(),
-            'votes': record.get_votes()
+            'votes': record.get_votes(),
+            'key': key if record.author.email == session[key] else ''
         }
         posts.append(post)
 
         posts.sort(key=lambda post: post['post_date'], reverse=False)
-        for post in posts:
-            print(post)
-
+        
     return jsonify(posts)
 
 @app.route('/get_comments', methods=['POST'])
@@ -152,6 +178,7 @@ def create_post():
         return jsonify({
             'post': {
                 'id': post.id,
+                'key': data['key'],
                 'content': post.content,
                 'status': post.status,
                 'post_date': post.post_date,
@@ -186,6 +213,51 @@ def archive_post():
             'message': 'Post: Something wrong',
             'status': 401
         })
+
+@app.route('/get_user_posts/<id>')
+def get_user_posts(id):
+
+    user = User.query.filter_by(id=id).first()
+    posts = []
+    for record in user.posts:
+        post = {
+            'id': record.id,
+            'userid': record.user_id,
+            'content': record.content,
+            'status': record.status,
+            'post_date': record.post_date,
+            'author': record.author.username,
+            'comments': record.get_comments(),
+            'votes': record.get_votes(),
+        }
+        posts.append(post)
+
+        posts.sort(key=lambda post: post['post_date'], reverse=False)
+        
+    return jsonify(posts)
+
+@app.route('/get_archived_posts/<id>')
+def get_archived_posts(id):
+    
+    user = User.query.filter_by(id=id).first()
+    posts = []
+    for record in user.posts:
+        if record.status == True:
+            post = {
+                'id': record.id,
+                'userid': record.user_id,
+                'content': record.content,
+                'status': record.status,
+                'post_date': record.post_date,
+                'author': record.author.username,
+                'comments': record.get_comments(),
+                'votes': record.get_votes()
+            }
+            posts.append(post)
+
+    posts.sort(key=lambda post: post['post_date'], reverse=False)
+        
+    return jsonify(posts)
 
 # Endpoint: for commenting
 @app.route('/add_comment', methods=['POST'])

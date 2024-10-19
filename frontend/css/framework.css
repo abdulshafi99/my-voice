@@ -22,6 +22,10 @@ body {
     flex-direction: column;
     /* text-align: center; */
 }
+
+.flex { display: flex; }
+.sp-between { justify-content: space-between; }
+
 .flex-column {
     flex-direction: column;
 }
@@ -138,4 +142,16 @@ body {
 
 button:hover {
     background-color: #30a9e6b6;
+}
+
+.flash {
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 20px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.success {
+    background-color: #7fa9ffba;
 }

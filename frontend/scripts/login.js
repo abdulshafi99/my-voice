@@ -1,5 +1,5 @@
-
-const setKey = (key) => localStorage.setItem('key', key);
+import { home } from "./urls.js";
+import { setKey } from "./key.js";
 
 const email = document.getElementById('email');
 const password = document.getElementById('password');
@@ -13,7 +13,7 @@ form.addEventListener('submit', async (event) => {
     const user_email = email.value;
     email.value = '';
 
-    user_password = password.value;
+    const user_password = password.value;
     password.value = '';
 
     const flashLogin = document.getElementById('flashLogin');
@@ -37,16 +37,19 @@ form.addEventListener('submit', async (event) => {
 
     if (response.status == 201) {
         setKey(response.key);
-        console.log(response);
-        location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/index.html')
+        location.replace(home)
     } else {
         flashLogin.style.display = 'block';
     }
-    // if (response.token) {
-    //     // location.replace('index.html');
-    //     console.log('correct login')
-    //     console.log(response.token)
-    // } else {
-    //     console.log('Email or password are wrong');
-    // }
+})
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const flash = document.getElementById('flash');
+    if (localStorage.getItem('login')) {
+        flash.style.display = 'block';
+    } else {
+        flash.style.display = 'none';
+    }
+    localStorage.removeItem('login');
 })

@@ -1,11 +1,4 @@
-
-const form = document.getElementById('form');
-const firstName = document.getElementById('firstName');
-const surname = document.getElementById('surname');
-const email = document.getElementById('email');
-const password = document.getElementById('password');
-const confirmPassword = document.getElementById('confirmPassword');
-const signUp = document.getElementById('signUp');
+import { login } from "./urls.js";
 
 function checkPassword(pass1, pass2) {
     if (pass1 === pass2) {
@@ -53,6 +46,15 @@ const sendData = async (data, route) => {
 form.addEventListener('submit', async (event) => {
     event.preventDefault();    // Prevent the form from sending to backend
 
+    const form = document.getElementById('form');
+    const firstName = document.getElementById('firstName');
+    const surname = document.getElementById('surname');
+    const email = document.getElementById('email');
+    const role = document.getElementById('role');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const signUp = document.getElementById('signUp');
+
     const user_name = `${firstName.value} ${surname.value}`;
     firstName.value = '';
     surname.value = '';
@@ -60,10 +62,13 @@ form.addEventListener('submit', async (event) => {
     const user_email = email.value;
     email.value = '';
 
+    const user_role = role.value;
+    role.value = '';
+
     const passowrd1 = password.value;
     const password2 = confirmPassword.value;
 
-    user_password = password.value;
+    const user_password = password.value;
     password.value = '';
 
     confirmPassword.value = '';
@@ -74,6 +79,7 @@ form.addEventListener('submit', async (event) => {
     const user = {
         username: user_name,
         email: user_email,
+        role: user_role,
         password: user_password
     };
 
@@ -92,7 +98,8 @@ form.addEventListener('submit', async (event) => {
     const response = await sendData(user, 'register');
     
     if(response.status == 201) {
-        location.replace('file:///C:/Users/User/Desktop/workspace/my-voice/frontend/login.html');
+        localStorage.setItem('login', 'successful');
+        location.replace(login);
     }
 
 })

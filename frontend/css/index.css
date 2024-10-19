@@ -174,3 +174,12 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+.profile-owner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    text-decoration: none;
+}

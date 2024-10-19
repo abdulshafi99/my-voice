@@ -1,0 +1,32 @@
+
+
+.profile-container {
+display: flex;
+gap: 20px;
+width: 70%;
+margin: 20px auto;
+
+}
+.col-1 {
+    width: 40%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+}
+.col-1 .img {
+    margin-bottom: 10px;
+}
+.col-1 .img img {
+    width: 100%;
+}
+.col-1 h2 {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+.col-1 p {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+.col-2 {
+    width: 50%;
+}

@@ -16,20 +16,19 @@
     <!-- main styling css File -->
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/framework.css">
+    <link rel="stylesheet" href="css/profile.css">
     <title>My-voice</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.png">
 </head>
 <body>
-
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <a href="index.html" class="logo">
             <img src="assets/logo.png" alt="">
-        </a>
-        <div class="profile" userid="" id="profile">
+        </a >
+        <div class="profile">
             <a href="profile.html" class="profile-owner">
                 <img src="assets/default-user.png" alt="">
-                <h2 id="userName">User Name</h2>
+                <h2 id="current_user">User Name</h2>
             </a>
             <div class="drop-down" id="dropDown">
                 <i class="fa-solid fa-sort-down"></i>
@@ -41,18 +40,25 @@
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="container">
-        <div class="create-post">
-            <textarea placeholder="What's on your mind?" id="newPostText"></textarea>
-            <button id="newSubmitPost">POST</button>
+    <main class="profile-container">
+        <div class="col-1">
+            <div class="img">
+                <img src="assets/default-user.png" alt="">
+            </div>
+            <h2 id="userName">user name</h2>
+            <p id="role">user job</p>
+            <p id="email">username@demo.com</p>
+            <p id="joinDate">joined in <span>2020</span></p>
         </div>
-        <!-- Post Feed Section -->
-        <main id='feed' class="feed">
-        
-        </main>
-        
-    </div>
-    <script src="scripts/script.js" type="module"></script>
+        <div class="col-2">
+            <div class="show flex sp-between mb-20">
+                <button class="active btn full">Active Posts</button>
+                <button class="archived btn full">Archived Posts</button>
+            </div>
+            <!-- Create Post Box -->
+            <div class="" id="feed"></div>
+        </div>
+    </main>
+    <script src="scripts/profile.js" type="module"></script>
 </body>
 </html>
