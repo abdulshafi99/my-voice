@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Work Sans", serif;
+}
+
+body {
+    background-color: #f0f2f5;
+}
+
+.block { display: block; }
+.hide { display: none; }
+
+.flex { display: flex; }
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+
+.wd-50 { width: 50%; }
+.full { width: 100%; }
+
+.m-10 { margin: 10px; }
+.mb-20 { margin-bottom: 20px; }
+.m-auto { margin: auto}
+.mt-20 { margin-top: 20px; }
+
+
+
+.h1 {
+    color: #2394c9;
+    font-size: 5rem;
+}
+
+.center-txt { text-align: center; }
+
+.txt-none { text-decoration: none; }
+
+.clr-main { color: #2394c9; }
+
+.fw-600 { font-weight: 600; }

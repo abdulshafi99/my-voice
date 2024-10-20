@@ -11,4 +11,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 CORS(app)
 
+from api.create_db import Database
+database = Database(db)
+
 from api import routes 
+

@@ -1,0 +1,360 @@
+
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #4267b2;
+    padding: 10px 20px;
+    color: white;
+}
+
+.logo > img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.profile-owner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    text-decoration: none;
+}
+
+.profile img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.profile h2 {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.drop-down {
+    padding: 10px 15px;
+    border-radius: 50%;
+    background-color: rgba(192, 191, 191, 0.625);
+    cursor: pointer;
+}
+.drop-down:hover {
+    background-color: #c3c3c34b;
+}
+
+.drop-down-click {
+    background-color: #c3c3c34b;
+}
+
+.drop-down > i {
+    font-size: 20px;
+    color: rgb(84, 83, 83);
+}
+
+.drop-down-click > i {
+    color: #4267b2;
+}
+
+.menu {
+    display: none;
+    width: 200px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 3px 10px;
+    position: absolute;
+    top: 50px;
+    right: 0px;
+    cursor: pointer;
+}
+
+.menu-click {
+    display: block;
+}
+
+.menu > button {
+    text-align: left;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    padding: 20px;
+    margin: 10px auto;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.menu > button:hover {
+    background-color: #ddd;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    width: 70%;
+    margin: auto;
+    flex-direction: column;
+}
+@media (max-width: 1000px) {
+    .container {
+        width: 100%;
+    }
+}
+
+.create-post {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.create-post textarea {
+    width: 95%;
+    display: block;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+.create-post button {
+    margin-top: 10px;
+    padding: 13px;
+    background-color: #4267b2;
+    color: white;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #30a9e6b6;
+}
+.feed {
+    margin: 0 20px;
+}
+
+.post {
+    width: 100%;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.post-header .author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.post-header .author img {
+    border-radius: 50%;
+}
+
+.post .post-content {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    margin-left: 20px;
+}
+
+.post-footer {
+    display: flex;
+}
+.post-footer button {
+    margin-right: 10px;
+    padding: 10px 10px;
+    background-color: #4267b2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.vote-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.post-footer .add-comment {
+    display: flex;
+    justify-content: flex-start;
+}
+.post-footer .add-comment .comment-inpt {
+    padding: 10px;
+    border-radius: 80px;
+    width: 450px;
+    margin-right: 10px;
+}
+.post-footer > .archive-container {
+    display: flex;
+    flex-direction: row;
+}
+.post-footer > .archive-container > button {
+    padding: 20px;
+}
+@media (max-width: 1420px) {
+    .post-footer {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 990px) {
+    .post-footer {
+        flex-direction: column;
+    }
+    .post-footer button {
+        width: 90px;
+        height: 45px;
+        text-align: center;
+    }
+    .post-footer .add-comment .comment-inpt {
+        width: 70%;
+    }   
+    
+}
+
+
+.votes {
+    font-weight: 800;
+}
+
+.comments{
+    padding: 50px;
+    margin-top: 20px;
+    border-top: .5px solid #000;
+}
+
+.comment {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: .5px solid #ddd;
+}
+.comment img {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+.comment-card {
+    width: 60%;
+    background-color: #ddd;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+
+.profile-container {
+    display: flex;
+    gap: 20px;
+    width: 70%;
+    margin: 20px auto;
+}
+
+
+.profile-card {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    height: fit-content;
+}
+
+.profile-card .img {
+    margin-bottom: 10px;
+}
+.profile-card .img img {
+    width: 100%;
+}
+.profile-card h2 {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+.profile-card p {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+.btn {
+    display: block;
+    outline: none;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+
+    padding: 15px 30px;
+
+    color: white;
+    font-size: 18px;
+    background-color: #2394c9;
+}
+
+.inpt {
+    padding: 12px;
+
+    outline: none;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.col-2 { flex-grow: 1; }
+
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    padding: 20px 15px;
+}
+
+.register-title {
+    margin: 15px auto;
+    padding: 20px;
+    border-bottom: 0.5px solid #ddd;
+}
+
+.register-title h2{
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.register-title span { color: #89959b; }
+
+.name { margin: 10px; }
+
+.name input { width: 45%; }
+
+.flash {
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 20px;
+    /* color: white; */
+    margin-bottom: 10px;
+}
+
+.success { background-color: #7fa9ffba; }
+
+.danger { background-color: rgba(243, 45, 45, 0.766); }

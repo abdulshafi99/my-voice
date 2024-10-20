@@ -1,5 +1,5 @@
 from flask import jsonify, request, redirect, url_for, render_template
-from api import app, db
+from api import app, db, database
 import secrets
 from datetime import datetime
 from api.models import User, Post, Comment, Vote
@@ -21,9 +21,11 @@ def register():
                 role = data['role'],
                 password = data['password']
             )
-            print(user)
-            db.session.add(user)
-            db.session.commit()
+            # print(user)
+            
+            # db.session.add(user)
+            # db.session.commit()
+            database.add_user(user)
             response = {
             'message': 'Data received successfuly, and user registered',
             'status': 201,
@@ -199,8 +201,9 @@ def create_post():
             content = data['content'],
             user_id = user.id
         )
-        db.session.add(post)
-        db.session.commit()
+        # db.session.add(post)
+        # db.session.commit()
+        database.add_post(post)
         return jsonify({
             'post': {
                 'id': post.id,
@@ -226,15 +229,15 @@ def create_post():
 def delete_post():
     data = request.get_json()
     post_id = data['post_id']
-    print(post_id)
+    # print(post_id)
     post = Post.query.filter_by(id=post_id).first()
     if post:
         for comment in post.comments:
-            db.session.delete(comment)
+            database.delete(comment)
         for vote in post.votes:
-            db.session.delete(vote)
-        db.session.delete(post)
-        db.session.commit()
+            database.delete(vote)
+        database.delete(post)
+        
         return jsonify({
             'message': 'post deleted successfully',
             'status': 200,
@@ -334,8 +337,9 @@ def add_comment():
             post_id = data['post_id']
         )
         print(comment)
-        db.session.add(comment)
-        db.session.commit()
+        # db.session.add(comment)
+        # db.session.commit()
+        database.add_comment(comment)
         response = {
             'message': 'comment added successfuly',
             'status': 200,
@@ -368,6 +372,7 @@ def add_vote():
             )
             db.session.add(vote)
             db.session.commit()
+            # database.add_vote(vote)
         response = {
             'message': 'vote submitted successfully',
             'status': 200,

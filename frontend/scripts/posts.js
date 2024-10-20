@@ -21,8 +21,8 @@ function addVotes(postid, votes) {
     console.log(postid)
     console.log(votes)
     
-    const upvotes = document.querySelector(`.post-footer[postid="${postid}"] > button[type="upvote"]`)
-    const downvotes = document.querySelector(`.post-footer[postid="${postid}"] > button[type="downvote"]`)
+    const upvotes = document.querySelector(`.post-footer[postid="${postid}"] > .vote-container > button[type="upvote"]`)
+    const downvotes = document.querySelector(`.post-footer[postid="${postid}"] > .vote-container > button[type="downvote"]`)
 
     upvotes.innerHTML = `Upvote  <span class='votes'>${votes.upvote}</span>`
     downvotes.innerHTML = `Downvote  <span class='votes'>${votes.downvote}</span>`
@@ -75,7 +75,7 @@ function addPost(post) {
     upVote.innerHTML = `Upvote <span class="votes">${post.votes.upvote}</span>`;
     upVote.addEventListener('click', async () => {
         const key = getKey();
-        const postid = upVote.parentElement.getAttribute('postid');
+        const postid = upVote.parentElement.parentElement.getAttribute('postid');
         const vote = upVote.getAttribute('type');
 
         const request = await fetch('http://127.0.0.1:5000/add_vote', {
@@ -105,7 +105,7 @@ function addPost(post) {
     downVote.innerHTML = `Downvote <span class="votes">${post.votes.downvote}</span>`;
     downVote.addEventListener('click', async () => {
         const key = getKey();
-        const postid = downVote.parentElement.getAttribute('postid');
+        const postid = downVote.parentElement.parentElement.getAttribute('postid');
         const vote = downVote.getAttribute('type');
 
         const request = await fetch('http://127.0.0.1:5000/add_vote', {
@@ -130,6 +130,8 @@ function addPost(post) {
         }
     })
 
+    const voteContainer = document.createElement('div');
+    voteContainer.setAttribute('class', 'vote-container');
 
     const addComment = document.createElement('div');
     addComment.setAttribute('class', 'add-comment');
@@ -191,8 +193,10 @@ function addPost(post) {
 
     postContent.appendChild(p);
 
-    postFooter.appendChild(upVote);
-    postFooter.appendChild(downVote);
+    voteContainer.appendChild(upVote);
+    voteContainer.appendChild(downVote);
+
+    postFooter.appendChild(voteContainer);
     postFooter.appendChild(addComment);
     if (current_user() == post.userid) {
         const archiveBtn = document.createElement('button');
@@ -240,8 +244,13 @@ function addPost(post) {
             }
         });
 
-        postFooter.appendChild(archiveBtn); 
-        postFooter.appendChild(deleteBtn);
+        const archiveContainer = document.createElement('div');
+        archiveContainer.setAttribute('class', 'archive-container');
+
+        archiveContainer.appendChild(archiveBtn);
+        archiveContainer.appendChild(deleteBtn);
+
+        postFooter.appendChild(archiveContainer);
     }
 
     const comments = get_comments(post.comments);
