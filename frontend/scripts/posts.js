@@ -2,6 +2,7 @@
 import { getKey } from "./key.js";
 import { get_comments, createComment } from './comments.js';
 import { profile } from "./urls.js";
+import { current_user } from "./user.js";
 
 function setDate(date) {
     date = date.replace(' GMT', '');
@@ -177,6 +178,7 @@ function addPost(post) {
         }
     })
 
+
     addComment.appendChild(commentInpt);
     addComment.appendChild(commentBtn);
     
@@ -192,7 +194,7 @@ function addPost(post) {
     postFooter.appendChild(upVote);
     postFooter.appendChild(downVote);
     postFooter.appendChild(addComment);
-    if (post.key == getKey()) {
+    if (current_user() == post.userid) {
         const archiveBtn = document.createElement('button');
         archiveBtn.setAttribute('class', 'archiveBtn');
         archiveBtn.setAttribute('postid', String(post.id));
@@ -216,7 +218,30 @@ function addPost(post) {
             }
         });
 
+        const deleteBtn = document.createElement('button');
+        deleteBtn.setAttribute('class', 'deleteBtn');
+        deleteBtn.setAttribute('postid', String(post.id));
+        deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+        deleteBtn.addEventListener('click', async (e) => {
+            const postid = deleteBtn.getAttribute('postid');
+    
+            const request = await fetch('http://127.0.0.1:5000/delete_post', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    post_id: postid,
+                })
+            })
+            const response = await request.json();
+            if (response.status == 200) {
+                deletePost(postid);
+            }
+        });
+
         postFooter.appendChild(archiveBtn); 
+        postFooter.appendChild(deleteBtn);
     }
 
     const comments = get_comments(post.comments);
@@ -239,6 +264,12 @@ function addPost(post) {
 }
 
 function archivePost(postid) {
+    const post = document.querySelector(`.post[postid="${postid}"]`);
+    post.remove();
+}
+
+function deletePost(postid) {
+    console.log(postid);
     const post = document.querySelector(`.post[postid="${postid}"]`);
     post.remove();
 }
@@ -298,6 +329,31 @@ function addArchivedPost(post) {
 
     postFooter.appendChild(upVote);
     postFooter.appendChild(downVote);
+    if (current_user() == post.userid) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.setAttribute('class', 'deleteBtn');
+        deleteBtn.setAttribute('postid', String(post.id));
+        deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+        deleteBtn.addEventListener('click', async (e) => {
+            const postid = deleteBtn.getAttribute('postid');
+    
+            const request = await fetch('http://127.0.0.1:5000/delete_post', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    post_id: postid,
+                })
+            })
+            const response = await request.json();
+            if (response.status == 200) {
+                deletePost(postid);
+            }
+        });
+
+        postFooter.appendChild(deleteBtn);
+    }
 
     const comments = get_comments(post.comments);
 

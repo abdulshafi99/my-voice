@@ -50,7 +50,8 @@ def login():
             response = {
                 'message': 'User Loged in successfuly',
                 'status': 201,
-                'key': key
+                'key': key,
+                'id': user.id
             }
             return jsonify(response)
         else:
@@ -89,6 +90,24 @@ def check_email():
             }
         return respose
 
+@app.route('/check_auth/<key>', methods=['GET'])
+def check_auth(key):
+    email = session.get(key)
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return jsonify({
+            'message': 'user authenticated',
+            'status': 200,
+            'is_authenticated': True,
+        })
+    else:
+        return jsonify({
+            'message': 'user not authenticated',
+            'status': 401,
+            'is_authenticated': False,
+        })
+
+
 @app.route('/current_user', methods=['POST'])
 def current_user():
     if request.method == 'POST':
@@ -109,7 +128,14 @@ def current_user():
             'status': 401
         }
     return jsonify(response)
-    
+
+# @app.route('/is_current_user', methods=['POST'])
+# def is_current_user():
+#     data = request.get_json()
+#     id = data['id']
+#     user = User.query.filter_by(id=id).first()
+#     if 
+
 @app.route('/get_user/<id>')
 def get_user(id):
     user = User.query.filter_by(id=id).first()
@@ -178,6 +204,7 @@ def create_post():
         return jsonify({
             'post': {
                 'id': post.id,
+                'userid': post.user_id,
                 'key': data['key'],
                 'content': post.content,
                 'status': post.status,
@@ -194,6 +221,32 @@ def create_post():
             'message': 'Unautherized access',
             'statsu': 401
         })
+
+@app.route('/delete_post', methods=['POST'])
+def delete_post():
+    data = request.get_json()
+    post_id = data['post_id']
+    print(post_id)
+    post = Post.query.filter_by(id=post_id).first()
+    if post:
+        for comment in post.comments:
+            db.session.delete(comment)
+        for vote in post.votes:
+            db.session.delete(vote)
+        db.session.delete(post)
+        db.session.commit()
+        return jsonify({
+            'message': 'post deleted successfully',
+            'status': 200,
+            'isdeleted': True
+        })
+    else:
+        return jsonify({
+            'message': 'post not found',
+            'status': 401,
+            'isdeleted': False
+        })
+
 
 @app.route('/archive_post', methods=['POST'])
 def archive_post():
@@ -214,23 +267,31 @@ def archive_post():
             'status': 401
         })
 
+def get_key(email):
+    for key, val in session.items():
+        if val == session[key]:
+            return key
+    return ''
+
 @app.route('/get_user_posts/<id>')
 def get_user_posts(id):
 
     user = User.query.filter_by(id=id).first()
     posts = []
     for record in user.posts:
-        post = {
-            'id': record.id,
-            'userid': record.user_id,
-            'content': record.content,
-            'status': record.status,
-            'post_date': record.post_date,
-            'author': record.author.username,
-            'comments': record.get_comments(),
-            'votes': record.get_votes(),
-        }
-        posts.append(post)
+        if record.status == False:
+            post = {
+                'id': record.id,
+                'userid': record.user_id,
+                'content': record.content,
+                'status': record.status,
+                'post_date': record.post_date,
+                'author': record.author.username,
+                'comments': record.get_comments(),
+                'votes': record.get_votes(),
+                'key': get_key(record.author.email)
+            }
+            posts.append(post)
 
         posts.sort(key=lambda post: post['post_date'], reverse=False)
         
@@ -320,6 +381,3 @@ def add_vote():
     return response
         
 
-@app.route('/home')
-def home():
-    return "<h1> hello Mustafa</h1>"

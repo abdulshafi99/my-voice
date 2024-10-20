@@ -37,6 +37,7 @@ form.addEventListener('submit', async (event) => {
 
     if (response.status == 201) {
         setKey(response.key);
+        localStorage.setItem('current_user', response.id);
         location.replace(home)
     } else {
         flashLogin.style.display = 'block';

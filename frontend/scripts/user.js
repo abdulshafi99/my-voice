@@ -14,8 +14,11 @@ const getUser = async (id) => {
         return response;
     }
 }
+const current_user = () => localStorage.getItem('current_user');
+
 
 export {
     getUser,
-    getUserId
+    getUserId,
+    current_user
 }

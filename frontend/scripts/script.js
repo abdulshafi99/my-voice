@@ -62,6 +62,7 @@ newSubmitPost.addEventListener('click', async(event) => {
 
         const response = await request.json();
 
+        console.log(response.post);
         if (response.status == 200) {
             addPost(response.post);
         } else {
@@ -90,6 +91,7 @@ async function setUser() {
         localStorage.setItem('username', data.user.username);
         document.getElementById('userName').innerText =  data.user.username;
         localStorage.setItem('id', data.user.id);
+        localStorage.setItem('current_user', data.user.id)
     } else {
         document.getElementById('userName').innerText = "Unkonw user";
     }
@@ -97,10 +99,13 @@ async function setUser() {
 
     
 document. addEventListener("DOMContentLoaded", async () => {
-    if (isAuthenticated()) {
+    const auth = await isAuthenticated();
+    if (auth == true) {
         await setUser();
         await get_posts();
+
     } else {
+        localStorage.clear();
         location.replace(login);
     }
 
