@@ -1,6 +1,6 @@
 import { dropDown, meun, logout } from './logout.js';
 import { getKey, isAuthenticated } from "./key.js";
-import { addArchivedPost, addPost } from './posts.js'
+import { addPost } from './posts.js'
 import { current_user, getUser, getUserId } from "./user.js";
 import { login } from "./urls.js";
 
@@ -100,7 +100,7 @@ document.querySelector('.archived').addEventListener('click', async(e) => {
 
     clearFeed();
     for (const post of posts) {
-        addArchivedPost(post);
+        addPost(post);
     }
 })
 
