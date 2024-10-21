@@ -79,7 +79,7 @@ def logout():
 def check_email():
     if request.method == 'POST':
         data = request.get_json()
-        user = User.query.filter_by(email=data['email'])
+        user = User.query.filter_by(email=data['email']).first()
         if user:
             respose = {
                 'message': 'Email registered',

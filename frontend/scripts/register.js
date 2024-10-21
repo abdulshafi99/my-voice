@@ -73,8 +73,16 @@ form.addEventListener('submit', async (event) => {
 
     confirmPassword.value = '';
 
-    const flashPassword = document.getElementById('flashPassword');
-    const flashEmail = document.getElementById('flashEmail');
+
+    const flashPassword = document.createElement('p');
+    flashPassword.setAttribute('id', 'flashPassword');
+    flashPassword.setAttribute('class', 'flash danger');
+    flashPassword.innerHTML = "Passwords don't match!"
+
+    const flashEmail = document.createElement('p');
+    flashEmail.setAttribute('id','flashEmail' );
+    flashEmail.setAttribute('class', 'flash danger');
+    flashEmail.innerHTML = "This Email Already registered! please try another email"
 
     const user = {
         username: user_name,
@@ -83,16 +91,40 @@ form.addEventListener('submit', async (event) => {
         password: user_password
     };
 
+    let status = false;
     if(!checkPassword(passowrd1, password2)) {
-        flashPassword.style.display = 'block';
-        return
+        const flash = document.querySelector('#flashPassword');
+        if (flash) {
+            flash.remove()
+        }
+        form.appendChild(flashPassword);
+        status = true;
+        // flashPassword.style.display = 'block';
     } else {
-        flashPassword.style.display = 'none';
+        const flash = document.querySelector('#flashPassword');
+        if (flash) {
+            flash.remove()
+        }
+        // flashPassword.style.display = 'none';
     }
-    if(! (await checkEmail(email))) {
-        flashEmail.style.display = 'block';
+    if(!(await checkEmail(user_email))) {
+        const flash = document.querySelector('#flashEmail');
+        if (flash) {
+            flash.remove();
+        }
+        form.appendChild(flashEmail);
+        status = true;
+        // flashEmail.style.display = 'block';
     } else {
-        flashEmail.style.display = 'none'
+            const flash = document.querySelector('#flashEmail');
+            if (flash) {
+                flash.remove();
+            }
+        // flashEmail.style.display = 'none'
+    }
+
+    if (status == true) {
+        return;
     }
     
     const response = await sendData(user, 'register');

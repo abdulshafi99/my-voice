@@ -274,7 +274,6 @@ button:hover {
     margin: 20px auto;
 }
 
-
 .profile-card {
     background-color: white;
     padding: 10px;
@@ -288,6 +287,18 @@ button:hover {
 .profile-card .img img {
     width: 100%;
 }
+@media (max-width: 950px) {
+    .profile-container {
+        flex-direction: column;
+    }
+    .profile-card {
+        margin: auto;;
+    }
+    .profile-card .img img {
+        max-width: 50%;
+    }
+}
+
 .profile-card h2 {
     font-size: 25px;
     margin-bottom: 10px;
@@ -296,6 +307,7 @@ button:hover {
     margin-bottom: 10px;
     font-size: 20px;
 }
+
 .btn {
     display: block;
     outline: none;

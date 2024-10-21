@@ -101,7 +101,7 @@ body {
     margin-bottom: 20px;
     color: white;
     
-    display: none;
+    /* display: none; */
 }
 
 .danger {
