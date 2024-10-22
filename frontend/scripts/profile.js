@@ -4,31 +4,8 @@ import { addPost } from './posts.js'
 import { current_user, getUser, getUserId } from "./user.js";
 import { login } from "./urls.js";
 
-async function setUser() {
-    const key = getKey();
-    const response = await fetch('http://127.0.0.1:5000/current_user', {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            key: key
-        })
-    });
 
-    const data = await response.json();
-
-    if (data.status == 200) {
-        document.querySelector('nav > .profile').setAttribute('userid', data.user.id)
-        localStorage.setItem('username', data.user.username);
-        document.getElementById('userName').innerText =  data.user.username;
-        localStorage.setItem('id', data.user.id);
-    } else {
-        document.getElementById('userName').innerText = "Unkonw user";
-    }
-}
-
-
+// format date in hours and mintues
 function setDate(date) {
     date = date.replace(' GMT', '');
 
@@ -42,48 +19,60 @@ function setDate(date) {
 
 }
 
+// clear feed "posts container"
 function clearFeed() {
     const feed = document.getElementById('feed');
     feed.innerHTML = "";
 }
 
+// get user posts  
 const getUserPosts = async (id) => {
 
     const request = await fetch(`http://127.0.0.1:5000/get_user_posts/${id}`);
 
     const response = await request.json();
 
+    // [{id, userid, content, status, post_date, username, comments, votes, key}, ....]
     return response;
 };
 
+// when page start
 document.addEventListener('DOMContentLoaded', async (e) => {
+    // check if user authentuicated
+    // if not authenticated clear localstorage
+    // redirect user to login page
     const auth = await isAuthenticated();
     if (auth == false) {
         localStorage.clear();
         location.replace(login);
     } else {
-        
+        // if uset authenticated
+        // getuser key, id, 
         const key = getKey();
         const userid = getUserId()
         const user = await getUser(userid);
-
+        
+        // set navbar data "current user" "logined user"
         document.querySelector('#current_user').innerHTML = localStorage.getItem('username');
-        document.querySelector('#userName').innerHTML = user.username;
+        // incase user clicked on his profile change userid to current user id
         document.querySelector('#profile-owner').addEventListener('click', () => {
             const id = current_user();
             localStorage.setItem('id', id);
         })
+
+        // set the profile card data [name, role, email, joined date]
+        document.querySelector('#userName').innerHTML = user.username;
         document.querySelector('#role').innerHTML = user.role;
         document.querySelector('#email').innerHTML = user.email;
         document.querySelector('#joinDate').innerHTML = `joined ${setDate(user.join_date)} ago`;
 
-
-
+        // get user posts
         const posts = await getUserPosts(userid);
+        // clear the feed "posts container"
         clearFeed();
+        // loop over the posts and add each post to feed
         for (const post of posts) {
             if (post.status == false) {
-                console.log(post);
                 addPost(post);
             }
         }
@@ -91,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 
 });
 
+// get archived posts and show them on profile archived tab
 document.querySelector('.archived').addEventListener('click', async(e) => {
     
     const id = getUserId();
@@ -104,6 +94,7 @@ document.querySelector('.archived').addEventListener('click', async(e) => {
     }
 })
 
+// get active posts and show them on profile active tab
 document.querySelector('.active').addEventListener('click', async(e) => {
     const id = getUserId();
     const request = await fetch(`http://127.0.0.1:5000/get_user_posts/${id}`);

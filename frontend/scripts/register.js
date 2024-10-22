@@ -1,5 +1,6 @@
 import { login } from "./urls.js";
 
+// check if two passwords are identical
 function checkPassword(pass1, pass2) {
     if (pass1 === pass2) {
         return true
@@ -8,6 +9,7 @@ function checkPassword(pass1, pass2) {
     }
 }
 
+// check if email already registered in database
 async function checkEmail(email) {
     const response = await fetch('http://127.0.0.1:5000/check_email', {
         method: "POST",
@@ -43,17 +45,18 @@ const sendData = async (data, route) => {
 }
 
 
+const form = document.getElementById('form');
 form.addEventListener('submit', async (event) => {
-    event.preventDefault();    // Prevent the form from sending to backend
+    // Prevent the form from sending to backend
+    event.preventDefault();    
 
-    const form = document.getElementById('form');
+    // get username, email, role , password, confirmed password
     const firstName = document.getElementById('firstName');
     const surname = document.getElementById('surname');
     const email = document.getElementById('email');
     const role = document.getElementById('role');
     const password = document.getElementById('password');
     const confirmPassword = document.getElementById('confirmPassword');
-    const signUp = document.getElementById('signUp');
 
     const user_name = `${firstName.value} ${surname.value}`;
     firstName.value = '';
@@ -73,7 +76,7 @@ form.addEventListener('submit', async (event) => {
 
     confirmPassword.value = '';
 
-
+    // create a p showing error message incase you entered wrong password or email
     const flashPassword = document.createElement('p');
     flashPassword.setAttribute('id', 'flashPassword');
     flashPassword.setAttribute('class', 'flash danger');
@@ -91,6 +94,7 @@ form.addEventListener('submit', async (event) => {
         password: user_password
     };
 
+    // if user entered wrong email or password show them error message and reload the image
     let status = false;
     if(!checkPassword(passowrd1, password2)) {
         const flash = document.querySelector('#flashPassword');
@@ -99,13 +103,11 @@ form.addEventListener('submit', async (event) => {
         }
         form.appendChild(flashPassword);
         status = true;
-        // flashPassword.style.display = 'block';
     } else {
         const flash = document.querySelector('#flashPassword');
         if (flash) {
             flash.remove()
         }
-        // flashPassword.style.display = 'none';
     }
     if(!(await checkEmail(user_email))) {
         const flash = document.querySelector('#flashEmail');
@@ -114,21 +116,28 @@ form.addEventListener('submit', async (event) => {
         }
         form.appendChild(flashEmail);
         status = true;
-        // flashEmail.style.display = 'block';
     } else {
             const flash = document.querySelector('#flashEmail');
             if (flash) {
                 flash.remove();
             }
-        // flashEmail.style.display = 'none'
     }
 
     if (status == true) {
         return;
     }
     
-    const response = await sendData(user, 'register');
-    
+    // store new user in database
+    const request = await fetch(`http://127.0.0.1:5000/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+    });
+    // {message, status}
+    const response = await request.json()
+    // if registeration successful store a login variable in local storage and show a message on login page
     if(response.status == 201) {
         localStorage.setItem('login', 'successful');
         location.replace(login);

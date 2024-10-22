@@ -11,87 +11,89 @@ session = {
 # Endpoint: to create new users
 @app.route('/register', methods=['POST'])
 def register():
-    if request.method == 'POST':
-        data = request.get_json()
-        user = User.query.filter_by(email=data['email']).first()
-        if not user:
-            user = User(
-                username = data['username'],
-                email = data['email'],
-                role = data['role'],
-                password = data['password']
-            )
-            # print(user)
-            
-            # db.session.add(user)
-            # db.session.commit()
-            database.add_user(user)
-            response = {
-            'message': 'Data received successfuly, and user registered',
-            'status': 201,
+    # {username, email, role, password}
+    data = request.get_json()
+    user = User.query.filter_by(email=data['email']).first()
+    if not user:
+        user = User(
+            username = data['username'],
+            email = data['email'],
+            role = data['role'],
+            password = data['password']
+        )
+        database.add_user(user)
+        # success
+        response = {
+        'message': 'Data received successfuly, and user registered',
+        'status': 201,
+    }
+    else:
+        # failed
+        response = {
+            'message': 'email already registered!',
+            'satsus': 409
         }
-        else:
-            response = {
-                'message': 'email already registered!',
-                'satsus': 409
-            }
-        
-        return jsonify(response)
+    
+    return jsonify(response)
 
 # Endpoint: to login users
 @app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        data = request.get_json()
+    # {email, password}
+    data = request.get_json()
+    
+    user = User.query.filter_by(email=data['email']).first()
+    # user in exist in database
+    if user and user.password == data['password']:
+        # create a key for authentication and store it in session dict
+        key = secrets.token_hex(16)
+        session[key] = data['email']
         
-        user = User.query.filter_by(email=data['email']).first()
-
-        if user and user.password == data['password']:
-            key = secrets.token_hex(16)
-            session[key] = data['email']
-            response = {
-                'message': 'User Loged in successfuly',
-                'status': 201,
-                'key': key,
-                'id': user.id
-            }
-            return jsonify(response)
-        else:
-            response = {
-                'message': 'User not Found',
-                'status': 401
-            }
-            return jsonify(response)
+        response = {
+            'message': 'User Loged in successfuly',
+            'status': 201,
+            'key': key,
+            'id': user.id
+        }
+    else:
+        response = {
+            'message': 'User not Found',
+            'status': 401
+        }
+    return jsonify(response)
 
 # Endpoint: to lougout users
 @app.route('/logout', methods=['POST'])
 def logout():
-    if request.method == 'POST':
-        data = request.get_json()
-        print(data)
-        del session[data['key']]
+    data = request.get_json()
+    # {key}
+    del session[data['key']]
+
     return jsonify({
         'message': 'key removed from backend',
         'status': 200
     })
 
+# Endpoint: to check if email stored in database
 @app.route('/check_email', methods=['POST'])
 def check_email():
-    if request.method == 'POST':
-        data = request.get_json()
-        user = User.query.filter_by(email=data['email']).first()
-        if user:
-            respose = {
-                'message': 'Email registered',
-                'status': 200
-            }
-        else:
-            respose = {
-                'message': 'Email not Registered',
-                'status': 409
-            }
-        return respose
+    data = request.get_json()
+    # { email }
+    user = User.query.filter_by(email=data['email']).first()
+    # check if user in database
+    if user:
+        respose = {
+            'message': 'Email registered',
+            'status': 200
+        }
+    else:
+        respose = {
+            'message': 'Email not Registered',
+            'status': 409
+        }
+    return respose
 
+# Endpoint: to check if user authenticated or not
 @app.route('/check_auth/<key>', methods=['GET'])
 def check_auth(key):
     email = session.get(key)
@@ -110,12 +112,13 @@ def check_auth(key):
         })
 
 
+# Endpoint: to get current user "autheraized user"
 @app.route('/current_user', methods=['POST'])
 def current_user():
-    if request.method == 'POST':
-        data = request.get_json()
-        email = session[data['key']]
-        user = User.query.filter_by(email=email).first()
+    data = request.get_json()
+    email = session[data['key']]
+    user = User.query.filter_by(email=email).first()
+    if user:
         response = {
             'message': 'Ok!',
             'status': 200,
@@ -131,13 +134,7 @@ def current_user():
         }
     return jsonify(response)
 
-# @app.route('/is_current_user', methods=['POST'])
-# def is_current_user():
-#     data = request.get_json()
-#     id = data['id']
-#     user = User.query.filter_by(id=id).first()
-#     if 
-
+# Endpoint: to show user data
 @app.route('/get_user/<id>')
 def get_user(id):
     user = User.query.filter_by(id=id).first()
@@ -164,10 +161,11 @@ def get_user(id):
 # Endpoint: for returnning all posts
 @app.route('/get_posts', methods=['POST'])
 def get_posts():
-
+    # {key,}
     data = Post.query.filter_by(status=False)
     key = request.get_json()['key']
     posts = []
+    # loop over list of posts
     for record in data:
         post = {
             'id': record.id,
@@ -181,14 +179,10 @@ def get_posts():
             'key': key if record.author.email == session[key] else ''
         }
         posts.append(post)
-
+        # sort posts by date
         posts.sort(key=lambda post: post['post_date'], reverse=False)
         
     return jsonify(posts)
-
-@app.route('/get_comments', methods=['POST'])
-def get_comments():
-    pass
 
 
 # Endpoint: for creating new post
@@ -196,13 +190,15 @@ def get_comments():
 def create_post():
     if request.method == 'POST':
         data = request.get_json()
+        # { key, content }
+        # get user
         user = User.query.filter_by(email=session[data['key']]).first()
+        # create a post
         post = Post(
             content = data['content'],
             user_id = user.id
         )
-        # db.session.add(post)
-        # db.session.commit()
+        # add post to database
         database.add_post(post)
         return jsonify({
             'post': {
@@ -228,14 +224,18 @@ def create_post():
 @app.route('/delete_post', methods=['POST'])
 def delete_post():
     data = request.get_json()
+
     post_id = data['post_id']
-    # print(post_id)
     post = Post.query.filter_by(id=post_id).first()
+    
     if post:
+        # delete post's comments
         for comment in post.comments:
             database.delete(comment)
+        # delete post's votes
         for vote in post.votes:
             database.delete(vote)
+        # delete post
         database.delete(post)
         
         return jsonify({
@@ -250,37 +250,39 @@ def delete_post():
             'isdeleted': False
         })
 
-
+# Endpoint: to archive post
 @app.route('/archive_post', methods=['POST'])
 def archive_post():
-    if request.method == 'POST':
-        data = request.get_json()
-        post = Post.query.filter_by(id=data['post_id']).first()
-        if post:
-            post.status = True
-            db.session.commit()
-            return jsonify({
-                'message': 'Post archived successfully',
-                'status': 200,
-                'postid': post.id
-            })
-    else:
+    data = request.get_json()
+    # { postid }
+    post = Post.query.filter_by(id=data['post_id']).first()
+    if post:
+        post.status = True
+        db.session.commit()
         return jsonify({
-            'message': 'Post: Something wrong',
-            'status': 401
+            'message': 'Post archived successfully',
+            'status': 200,
+            'postid': post.id
         })
+    return jsonify({
+        'message': 'Post: Something wrong',
+        'status': 401
+    })
 
+# get user key
 def get_key(email):
     for key, val in session.items():
         if val == session[key]:
             return key
     return ''
 
+# Endpoint: to get user active posts
 @app.route('/get_user_posts/<id>')
 def get_user_posts(id):
-
+    # get user
     user = User.query.filter_by(id=id).first()
     posts = []
+    # add active post to posts
     for record in user.posts:
         if record.status == False:
             post = {
@@ -295,16 +297,18 @@ def get_user_posts(id):
                 'key': get_key(record.author.email)
             }
             posts.append(post)
-
+        # sort posts by create_date
         posts.sort(key=lambda post: post['post_date'], reverse=False)
         
     return jsonify(posts)
 
+# Endpoint: to get archived posts
 @app.route('/get_archived_posts/<id>')
 def get_archived_posts(id):
-    
+    # get user
     user = User.query.filter_by(id=id).first()
     posts = []
+    # add archived post to posts
     for record in user.posts:
         if record.status == True:
             post = {
@@ -318,7 +322,7 @@ def get_archived_posts(id):
                 'votes': record.get_votes()
             }
             posts.append(post)
-
+    # sort posts by create_date
     posts.sort(key=lambda post: post['post_date'], reverse=False)
         
     return jsonify(posts)
@@ -327,18 +331,16 @@ def get_archived_posts(id):
 @app.route('/add_comment', methods=['POST'])
 def add_comment():
     data = request.get_json()
-    print(data)
     user = User.query.filter_by(email=session[data['key']]).first()
-    print(user)
+    # user exists
     if user:
+        # create a comment
         comment = Comment(
             content= data['content'],
             user_id = user.id,
             post_id = data['post_id']
         )
-        print(comment)
-        # db.session.add(comment)
-        # db.session.commit()
+        # add comment to database
         database.add_comment(comment)
         response = {
             'message': 'comment added successfuly',
@@ -356,8 +358,10 @@ def add_comment():
 @app.route('/add_vote', methods=['POST'])
 def add_vote():
     data = request.get_json()
+    # {key, postid, vote }
     user_id = User.query.filter_by(email= session[data['key']]).first().id
     post_id = data['postid']
+
     if user_id and post_id:
         vote = Vote.query.filter_by(user_id=user_id, post_id=post_id).first()
         post = Post.query.filter_by(id=post_id).first()
@@ -370,9 +374,7 @@ def add_vote():
                 user_id = user_id,
                 vote_type = data['vote']
             )
-            db.session.add(vote)
-            db.session.commit()
-            # database.add_vote(vote)
+            database.add_vote(vote)
         response = {
             'message': 'vote submitted successfully',
             'status': 200,
