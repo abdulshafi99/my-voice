@@ -33,31 +33,19 @@ This app is an internal social media platform for employees to share suggestions
    - **Flask (Python)** as the core web framework.
    - **SQLAlchemy** as the ORM (Object-Relational Mapping) for database management.
    - **SQLite** as the database for storing users, posts, comments, and votes.
-
-### 3. **Database Schema**
-   - **Users** Table:
-     - `id` (Primary Key)
-     - `username`
-     - `email`
-     - `password_hash`
-     - `role`
-   - **Posts** Table:
-     - `id` (Primary Key)
-     - `user_id` (Foreign Key)
-     - `content` (Text of the post)
-     - `status` (Active or Archived)
-     - `created_at` (Timestamp)
-   - **Comments** Table:
-     - `id` (Primary Key)
-     - `post_id` (Foreign Key)
-     - `user_id` (Foreign Key)
-     - `comment_text`
-     - `created_at` (Timestamp)
-   - **Votes** Table:
-     - `id` (Primary Key)
-     - `post_id` (Foreign Key)
-     - `user_id` (Foreign Key)
-     - `vote_type` (Upvote or Downvote)
-
 ---
+### 3. **Installation & Usage**
+#### a. Server side
+```
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python run.py
+```
+#### b. client side
+```
+cd frontend
+```
+#### c. open the index.html with live server
 
